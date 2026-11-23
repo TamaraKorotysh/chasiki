@@ -22,6 +22,7 @@ pcm = pcm * gain
 
 blocks = json.load(open(PH, encoding="utf-8"))
 cuts = {c["id"]: c for c in json.load(open(CUTS, encoding="utf-8"))}
+FIX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fix")
 os.makedirs(OUTD, exist_ok=True)
 for f in os.listdir(OUTD):
     if f.endswith(".mp3"): os.remove(os.path.join(OUTD, f))
@@ -36,6 +37,14 @@ for bi, b in enumerate(blocks):
         c = cuts[it["id"]]
         a, e = int(c["a"] * SR), int(c["b"] * SR)
         seg = pcm[a:e].copy()
+        fx = os.path.join(FIX, it["id"] + ".mp3")
+        if os.path.exists(fx):  # перезаписанная фраза: громкость как у старого куска
+            nraw = subprocess.run(["ffmpeg", "-v", "error", "-i", fx, "-af", "silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.06,areverse,silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.12,areverse",
+                                   "-ac", "1", "-ar", str(SR), "-f", "s16le", "-"], capture_output=True, check=True).stdout
+            nseg = np.frombuffer(nraw, dtype=np.int16).astype(np.float32)
+            rms = lambda x: float(np.sqrt(np.mean(x[np.abs(x) > 300] ** 2)))
+            seg = nseg * (rms(seg) / max(1.0, rms(nseg)))
+            print("override", it["id"], round(len(seg) / SR, 2), "s")
         if len(seg) > 2 * fade:
             seg[:fade] *= ramp; seg[-fade:] *= ramp[::-1]
         items.append([it["id"], bi, round(pos / SR, 3), round(len(seg) / SR, 3), it["text"]])
