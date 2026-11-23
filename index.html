@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Часики</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff6e5; --card:#ffffff; --ink:#2b2d42; --muted:#6b6f80; --line:#f1e2c4;
+  --accent:#ffd166; --good:#06d6a0; --bad:#ef476f;
+  --hour:#e63958; --minute:#118ab2; --second:#2a9d4b;
+  --sh:0 5px 0 rgba(0,0,0,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#1e2033; --card:#2b2e45; --ink:#f5f1e6; --muted:#b3b6cc; --line:#3a3e5c; --sh:0 5px 0 rgba(0,0,0,.3); }
+}
+:root[data-theme="dark"]{ --bg:#1e2033; --card:#2b2e45; --ink:#f5f1e6; --muted:#b3b6cc; --line:#3a3e5c; --sh:0 5px 0 rgba(0,0,0,.3); }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;min-height:100vh}
+button{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg);border-bottom:2px solid var(--line)}
+header h1{flex:1;font-size:21px;margin:0;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{border:none;background:var(--card);border-radius:14px;min-width:46px;height:46px;font-size:22px;box-shadow:var(--sh);cursor:pointer;padding:0 8px}
+.ib.off{opacity:.45}
+main{max-width:1100px;margin:0 auto;padding:16px 16px 40px}
+.btn{font-weight:900;font-size:20px;border:none;border-radius:18px;padding:14px 22px;background:var(--accent);color:#2b2d42;box-shadow:0 5px 0 rgba(0,0,0,.15);cursor:pointer;touch-action:manipulation}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.btn.sec{background:var(--card);color:var(--ink)}
+.btn.go{background:var(--good);color:#073b2c}
+.btn.sm{font-size:17px;padding:10px 14px;border-radius:14px}
+.btn:disabled{opacity:.4;pointer-events:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stage{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:center}
+@media (max-width:820px){.stage{grid-template-columns:minmax(0,1fr);gap:14px}}
+.clockcol{display:flex;justify-content:center;position:relative}
+.clockbox{width:100%;max-width:min(440px,56vh);position:relative}
+svg.clock{width:100%;height:auto;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+svg.clock.drag{cursor:grab}
+svg.clock.numclick .num{cursor:pointer}
+.rim{fill:#ffd166}
+.face{fill:#fffdf6}
+.tk{stroke:#9a9cab;stroke-width:1.4}
+.tk5{stroke:#2b2d42;stroke-width:3.2;stroke-linecap:round}
+.nt{fill:#2b2d42;font-size:24px;font-weight:900;text-anchor:middle;dominant-baseline:central;font-family:'Nunito',system-ui,sans-serif}
+.nb{fill:transparent;transition:fill .2s}
+.num.glow .nb{fill:#ffd166}
+.num.done .nb{fill:#b8f2dc}
+.num.bad .nb{fill:#ffc2cf}
+.rl{fill:#0b5e7a;font-size:11px;font-weight:900;text-anchor:middle;dominant-baseline:central;font-family:'Nunito',system-ui,sans-serif}
+.sector{fill:rgba(17,138,178,.17)}
+.sector.s{fill:rgba(42,157,75,.18)}
+.hand line{stroke-linecap:round}
+.hh line{stroke:var(--hour);stroke-width:11}
+.mh line{stroke:var(--minute);stroke-width:6.5}
+.sh line{stroke:var(--second);stroke-width:2.2}
+.sh circle{fill:var(--second)}
+.cap{fill:#2b2d42}.cap2{fill:var(--second)}
+.bubble{display:flex;gap:12px;align-items:flex-start;background:var(--card);border-radius:22px;padding:16px;box-shadow:var(--sh)}
+.owl{font-size:46px;line-height:1;flex:none}
+.bubble .txt{flex:1;min-width:0}
+.q{font-size:23px;font-weight:800;line-height:1.35}
+.big{font-size:46px;font-weight:900;color:var(--minute);line-height:1.15}
+.big:empty{display:none}
+.say{flex:none;border:none;background:var(--bg);border-radius:14px;width:48px;height:48px;font-size:24px;cursor:pointer}
+.fb{min-height:30px;margin-top:12px;font-size:20px;font-weight:800;line-height:1.35}
+.fb.ok{color:#05a37a}.fb.no{color:var(--bad)}
+.actions{margin-top:16px}
+.dots{display:flex;gap:8px;justify-content:center;margin:2px 0 14px}
+.dot{width:16px;height:16px;border-radius:50%;background:var(--line)}
+.dot.cur{background:var(--accent);transform:scale(1.2)}
+.dot.ok{background:var(--good)}.dot.meh{background:#ffb4c4}
+.stage.wide{grid-template-columns:minmax(0,1fr);max-width:900px;margin:0 auto}
+.stage.wide .minis{max-width:900px}
+.stage.wide .clockcol{order:2}
+.minis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%;max-width:640px}
+.mini{background:var(--card);border-radius:20px;padding:6px;border:5px solid transparent;cursor:pointer;box-shadow:var(--sh)}
+.mini.ok{border-color:var(--good)}.mini.no{border-color:var(--bad);opacity:.6}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.opt{border:5px solid transparent;background:var(--card);border-radius:20px;padding:14px 6px;font-size:34px;font-weight:900;cursor:pointer;box-shadow:var(--sh);touch-action:manipulation}
+.opt small{display:block;font-size:16px;font-weight:800;color:var(--muted);margin-top:4px}
+.opt.ok{border-color:var(--good)}.opt.no{border-color:var(--bad);opacity:.6}
+.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.pulse{animation:pulse 1s ease-in-out 2}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.badge{position:absolute;top:0;left:0;background:var(--card);border-radius:16px;padding:6px 12px;font-size:20px;font-weight:900;box-shadow:var(--sh)}
+.cover{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:110px;background:var(--bg);border-radius:50%}
+/* map */
+.hero{display:flex;gap:14px;align-items:center;margin:6px 0 18px}
+.hero .owl{font-size:64px}
+.hero h2{margin:0;font-size:28px;font-weight:900}
+.hero p{margin:4px 0 0;color:var(--muted);font-weight:700;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.card{position:relative;background:var(--card);border:none;border-radius:22px;padding:16px 12px 14px;box-shadow:var(--sh);cursor:pointer;text-align:center;touch-action:manipulation}
+.card .em{font-size:48px;line-height:1.1}
+.card .tt{font-size:18px;font-weight:900;margin-top:6px;line-height:1.2}
+.card .st{font-size:18px;margin-top:6px;letter-spacing:2px;color:#f4a100}
+.card .n{position:absolute;top:10px;left:12px;background:var(--accent);color:#2b2d42;border-radius:50%;width:30px;height:30px;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center}
+.card.locked{opacity:.5}
+.card.next{outline:4px solid var(--accent);outline-offset:2px}
+h3{font-size:22px;margin:26px 0 12px;font-weight:900}
+.small{color:var(--muted);font-size:15px;font-weight:700}
+.link{background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-weight:700;font-size:15px;padding:6px 0}
+.steps{display:flex;gap:6px;margin-top:12px}
+.steps i{flex:1;height:7px;border-radius:4px;background:var(--line)}
+.steps i.on{background:var(--accent)}
+.result{text-align:center;padding-top:30px}
+.result .stars{font-size:72px;letter-spacing:6px}
+.result .stars .e{filter:grayscale(1);opacity:.3}
+.result h2{font-size:30px;margin:10px 0 24px}
+.result .row{justify-content:center}
+.tog{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tog button{border:3px solid var(--line);background:var(--card);border-radius:14px;padding:8px 12px;font-weight:800;font-size:16px;cursor:pointer}
+.tog button.on{border-color:var(--minute);background:rgba(17,138,178,.12)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-weight:800;font-size:16px}
+.legend span::before{content:"";display:inline-block;width:26px;height:8px;border-radius:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.fly{position:fixed;z-index:50;font-size:34px;pointer-events:none;animation:fly 1.3s ease-out forwards}
+@keyframes fly{0%{transform:translate(0,0) scale(.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.2) rotate(var(--r));opacity:0}}
+</style>
+</head>
+<body>
+<header>
+  <button class="ib" id="homeBtn" title="На карту">🗺️</button>
+  <h1 id="title">Часики</h1>
+  <button class="ib" id="sndBtn" title="Звуки">🔔</button>
+  <button class="ib" id="voiceBtn" title="Голос">🗣️</button>
+</header>
+<main id="view"></main>
+
+<script>
+/* ===================== Хранилище ===================== */
+const KEY='chasiki.v1';
+const S=(()=>{const d={g:{},all:false,sound:true,voice:true,seen:{}};try{return Object.assign(d,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){return d}})();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ===================== Утилиты ===================== */
+const $=(s,r=document)=>r.querySelector(s);
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+const H=(h,m=0,s=0)=>((((h%12)+12)%12)*3600+m*60+s);
+const norm=T=>((Math.round(T)%43200)+43200)%43200;
+const hOf=T=>Math.floor(norm(T)/3600)%12||12;
+const mOf=T=>Math.floor(norm(T)/60)%60;
+const fmt=T=>hOf(T)+':'+String(mOf(T)).padStart(2,'0');
+
+/* ===================== Время по-русски ===================== */
+const CARD=['ноль','один','два','три','четыре','пять','шесть','семь','восемь','девять','десять','одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать'];
+const FEM=CARD.slice();FEM[1]='одна';FEM[2]='две';
+const TENS={20:'двадцать',30:'тридцать',40:'сорок',50:'пятьдесят'};
+const ORD_GEN=['','первого','второго','третьего','четвёртого','пятого','шестого','седьмого','восьмого','девятого','десятого','одиннадцатого','двенадцатого'];
+const HOUR_NOM=['','час','два','три','четыре','пять','шесть','семь','восемь','девять','десять','одиннадцать','двенадцать'];
+const GEN=['','одной','двух','трёх','четырёх','пяти','шести','семи','восьми','девяти','десяти','одиннадцати','двенадцати','тринадцати','четырнадцати','пятнадцати','шестнадцати','семнадцати','восемнадцати','девятнадцати','двадцати'];
+function plural(n,a,b,c){const t=n%100,u=n%10;if(t>10&&t<20)return c;if(u===1)return a;if(u>=2&&u<=4)return b;return c}
+function numF(n){if(n<20)return FEM[n];const t=Math.floor(n/10)*10,u=n%10;return TENS[t]+(u?' '+FEM[u]:'')}
+function minPhrase(m){return numF(m)+' '+plural(m,'минута','минуты','минут')}
+function hourPhrase(h){return h===1?'час':CARD[h]+' '+plural(h,'час','часа','часов')}
+function genN(n){return n<=20?GEN[n]:'двадцати '+GEN[n-20]}
+// Разговорная форма: «половина четвёртого», «без пяти четыре»
+function timeWords(T){
+  const h=hOf(T),m=mOf(T),nx=h%12+1;
+  if(m===0)return hourPhrase(h);
+  if(m===30)return 'половина '+ORD_GEN[nx];
+  if(m===15)return 'четверть '+ORD_GEN[nx];
+  if(m<35)return minPhrase(m)+' '+ORD_GEN[nx];
+  const r=60-m;
+  let bez;
+  if(r===15)bez='без четверти';
+  else if(r%5===0)bez='без '+genN(r);
+  else bez='без '+genN(r)+' '+(r%10===1&&r!==11?'минуты':'минут');
+  return bez+' '+HOUR_NOM[nx];
+}
+// «Электронная» форма: «три часа тридцать минут»
+function fullWords(T){const h=hOf(T),m=mOf(T);return hourPhrase(h)+(m?' '+minPhrase(m):' ровно')}
+function promptWords(T){const w=timeWords(T);return w==='час'?'ровно час':w}
+
+/* ===================== Звук и голос ===================== */
+let AC=null;
+function actx(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,d=.12,type='sine',v=.15,delay=0){
+  if(!S.sound)return;const a=actx();if(!a)return;
+  const t=a.currentTime+delay,o=a.createOscillator(),g=a.createGain();
+  o.type=type;o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.05);
+}
+let lastTick=0;
+const sfx={
+  good(){tone(660,.12,'triangle',.18);tone(880,.14,'triangle',.18,.1);tone(1175,.25,'triangle',.16,.2)},
+  bad(){tone(260,.18,'triangle',.14);tone(200,.25,'triangle',.12,.15)},
+  tick(alt){const n=performance.now();if(n-lastTick<45)return;lastTick=n;tone(alt?1500:1900,.03,'square',.025)},
+  pop(i=0){tone(520+i*45,.09,'sine',.14)},
+  win(){[523,659,784,1047].forEach((f,i)=>tone(f,.22,'triangle',.16,i*.13))}
+};
+let ruVoice=null;
+function loadVoices(){if(!window.speechSynthesis)return;const v=speechSynthesis.getVoices();ruVoice=v.find(x=>/^ru/i.test(x.lang)&&/google|milena|irina|svetlana|dariya/i.test(x.name))||v.find(x=>/^ru/i.test(x.lang))||null}
+if(window.speechSynthesis){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
+function say(text){
+  return new Promise(res=>{
+    if(!S.voice||!window.speechSynthesis||!text){setTimeout(res,300);return}
+    speechSynthesis.cancel();
+    const clean=String(text).replace(/\p{Extended_Pictographic}|️|‍/gu,'').replace(/→/g,',');
+    const u=new SpeechSynthesisUtterance(clean);u.lang='ru-RU';if(ruVoice)u.voice=ruVoice;u.rate=.92;u.pitch=1.1;
+    let done=false;const fin=()=>{if(!done){done=true;clearTimeout(to);res()}};
+    const to=setTimeout(fin,1800+clean.length*95);
+    u.onend=fin;u.onerror=fin;speechSynthesis.speak(u);
+  });
+}
+function burst(){
+  const em=['⭐','🌟','✨','🎉','⭐'];
+  const cx=innerWidth/2,cy=innerHeight/2.4;
+  for(let i=0;i<18;i++){const s=document.createElement('span');s.className='fly';s.textContent=pick(em);
+    s.style.left=cx+'px';s.style.top=cy+'px';const a=Math.random()*Math.PI*2,d=120+Math.random()*220;
+    s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',Math.sin(a)*d+'px');s.style.setProperty('--r',(rnd(360)-180)+'deg');
+    document.body.appendChild(s);setTimeout(()=>s.remove(),1400)}
+}
+const PRAISE=['Молодец!','Правильно!','Отлично!','Здорово!','Умница!','Верно!','Так держать!'];
+
+/* ===================== Навигация ===================== */
+let NAV=0;const TIMERS=new Set(),IVS=new Set();let CLOCKS=[];
+function later(ms){return new Promise(r=>{const id=setTimeout(()=>{TIMERS.delete(id);r()},ms);TIMERS.add(id)})}
+function every(fn,ms){const id=setInterval(fn,ms);IVS.add(id);return id}
+function go(html,title){
+  NAV++;
+  if(window.speechSynthesis)speechSynthesis.cancel();
+  TIMERS.forEach(clearTimeout);TIMERS.clear();IVS.forEach(clearInterval);IVS.clear();
+  CLOCKS.forEach(c=>c.destroy());CLOCKS=[];
+  $('#view').innerHTML=html;$('#title').textContent=title||'Часики';scrollTo(0,0);
+  return NAV;
+}
+const alive=t=>t===NAV;
+
+/* ===================== Часы ===================== */
+const NS='http://www.w3.org/2000/svg';
+function sv(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+const DEF={hour:false,minute:false,second:false,labels:false,sector:false,drag:null,numClick:false};
+class Clock{
+  constructor(host,opt={}){
+    this.T=0;this.acc=0;this.cfg={...DEF};this.onChange=null;this.onRelease=null;this.onNumber=null;this.iv=null;this.raf=null;this.drag=null;
+    const box=document.createElement('div');box.className=opt.mini?'minibox':'clockbox';host.appendChild(box);this.box=box;
+    const s=this.svg=sv('svg',{viewBox:'-128 -128 256 256',class:'clock'},box);
+    sv('circle',{r:125,class:'rim'},s);sv('circle',{r:104,class:'face'},s);
+    this.sec=sv('path',{class:'sector',d:''},s);
+    const tg=sv('g',{},s);
+    for(let i=0;i<60;i++){const a=i*6*Math.PI/180,r1=i%5?95:88,r2=101;
+      sv('line',{x1:r1*Math.sin(a),y1:-r1*Math.cos(a),x2:r2*Math.sin(a),y2:-r2*Math.cos(a),class:i%5?'tk':'tk5'},tg)}
+    this.lbl=sv('g',{},s);
+    for(let i=0;i<12;i++){const a=i*30*Math.PI/180;const t=sv('text',{x:114.5*Math.sin(a),y:-114.5*Math.cos(a),class:'rl'},this.lbl);t.textContent=String(i*5)}
+    this.nums={};const ng=sv('g',{},s);
+    for(let n=1;n<=12;n++){const a=n*30*Math.PI/180,x=75*Math.sin(a),y=-75*Math.cos(a);
+      const g=sv('g',{class:'num'},ng);sv('circle',{cx:x,cy:y,r:16,class:'nb'},g);const t=sv('text',{x,y,class:'nt'},g);t.textContent=n;this.nums[n]=g}
+    this.hh=sv('g',{class:'hand hh'},s);sv('line',{x1:0,y1:12,x2:0,y2:-52},this.hh);
+    this.mh=sv('g',{class:'hand mh'},s);sv('line',{x1:0,y1:14,x2:0,y2:-86},this.mh);
+    this.sh=sv('g',{class:'hand sh'},s);sv('line',{x1:0,y1:24,x2:0,y2:-94},this.sh);sv('circle',{cx:0,cy:17,r:5},this.sh);
+    sv('circle',{r:8,class:'cap'},s);sv('circle',{r:3,class:'cap2'},s);
+    this.bind();this.apply();this.render();CLOCKS.push(this);
+  }
+  destroy(){clearInterval(this.iv);cancelAnimationFrame(this.raf)}
+  config(c){this.cfg={...DEF,...c};this.apply();this.render();return this}
+  apply(){const c=this.cfg;
+    this.hh.style.display=c.hour?'':'none';this.mh.style.display=c.minute?'':'none';this.sh.style.display=c.second?'':'none';
+    this.lbl.style.display=c.labels?'':'none';this.svg.classList.toggle('drag',!!c.drag);this.svg.classList.toggle('numclick',!!c.numClick);
+    this.sec.classList.toggle('s',c.sector==='sec')}
+  set(T){cancelAnimationFrame(this.raf);this.T=norm(T);this.render();return this}
+  render(){
+    const T=this.T;
+    this.hh.setAttribute('transform',`rotate(${T/120})`);
+    this.mh.setAttribute('transform',`rotate(${(T%3600)/10})`);
+    this.sh.setAttribute('transform',`rotate(${(T%60)*6})`);
+    let a=null;
+    if(this.cfg.sector==='min')a=(T%3600)/10;else if(this.cfg.sector==='sec')a=this.secFull?360:(T%60)*6;
+    if(a===null||a<.5){this.sec.setAttribute('d','');return}
+    if(a>=359.5){this.sec.setAttribute('d','M0 -104 A104 104 0 1 1 -0.01 -104 Z');return}
+    const r=104,x=r*Math.sin(a*Math.PI/180),y=-r*Math.cos(a*Math.PI/180);
+    this.sec.setAttribute('d',`M0 0 L0 -${r} A${r} ${r} 0 ${a>180?1:0} 1 ${x} ${y} Z`);
+  }
+  animTo(target,ms=1200,raw=false){
+    cancelAnimationFrame(this.raf);const from=this.T;let d=raw?target-from:target-from;
+    if(!raw){d=((d%43200)+43200)%43200;if(d>21600)d-=43200}
+    return new Promise(res=>{const t0=performance.now();
+      const step=now=>{const k=Math.min(1,(now-t0)/ms),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+        this.T=norm(from+d*e);this.render();if(k<1)this.raf=requestAnimationFrame(step);else{this.T=norm(from+d);this.render();res()}};
+      this.raf=requestAnimationFrame(step)})
+  }
+  run(on,tick=false,onTick=null){clearInterval(this.iv);this.iv=null;
+    if(on)this.iv=setInterval(()=>{this.T=norm(this.T+1);this.acc++;this.render();if(tick)sfx.tick(this.T%2);onTick&&onTick(this)},1000)}
+  glow(n,on=true){this.nums[n].classList.toggle('glow',on)}
+  mark(n,cls,on=true){this.nums[n].classList.toggle(cls,on)}
+  clearMarks(){for(let n=1;n<=12;n++)this.nums[n].classList.remove('glow','done','bad')}
+  local(e){const p=this.svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(this.svg.getScreenCTM().inverse());
+    return{a:(Math.atan2(q.x,-q.y)*180/Math.PI+360)%360,r:Math.hypot(q.x,q.y)}}
+  pick(a,r){const c=this.cfg,d=c.drag,T=this.T,list=[];
+    if(d.hour&&c.hour)list.push({k:'hour',ang:T/120,len:42});
+    if(d.minute&&c.minute)list.push({k:'minute',ang:(T%3600)/10,len:82});
+    if(d.second&&c.second)list.push({k:'second',ang:(T%60)*6,len:96});
+    if(!list.length)return null;if(list.length===1)return list[0].k;
+    const diff=x=>{const v=Math.abs(x-a)%360;return Math.min(v,360-v)};
+    list.forEach(o=>o.d=diff(o.ang));
+    const near=list.filter(o=>o.d<24);
+    if(near.length===1)return near[0].k;
+    if(near.length>1){near.sort((p,q)=>Math.abs(p.len-r)-Math.abs(q.len-r));return near[0].k}
+    list.sort((p,q)=>p.d-q.d);return list[0].k}
+  moveTo(k,a){const d=this.cfg.drag;let delta=0;const wrap=(v,M)=>{v=((v%M)+M)%M;return v>M/2?v-M:v};
+    if(k==='hour'){const s=d.hour;delta=wrap(norm(Math.round(a*120/s)*s)-this.T,43200)}
+    else if(k==='minute'){const s=d.minute;delta=wrap((Math.round(a*10/s)*s)%3600-this.T%3600,3600)}
+    else{const s=d.second||1;delta=wrap((Math.round(a/6/s)*s)%60-this.T%60,60)}
+    if(delta){this.T=norm(this.T+delta);this.acc+=delta;this.render();sfx.tick();this.onChange&&this.onChange(this,delta)}}
+  bind(){const s=this.svg;
+    s.addEventListener('pointerdown',e=>{actx();const{a,r}=this.local(e),c=this.cfg;
+      if(c.numClick){if(this.onNumber&&r>50&&r<110){e.preventDefault();this.onNumber(Math.round(a/30)%12||12,this)}return}
+      if(!c.drag)return;e.preventDefault();const k=this.pick(a,r);if(!k)return;
+      this.drag=k;cancelAnimationFrame(this.raf);try{s.setPointerCapture(e.pointerId)}catch(_){}
+      this.moveTo(k,a)});
+    s.addEventListener('pointermove',e=>{if(this.drag){e.preventDefault();this.moveTo(this.drag,this.local(e).a)}});
+    const up=()=>{if(this.drag){this.drag=null;this.onRelease&&this.onRelease(this)}};
+    s.addEventListener('pointerup',up);s.addEventListener('pointercancel',up);
+  }
+}
+
+/* ===================== Уроки ===================== */
+const MINS={whole:[0],half:[0,30],quarter:[0,15,30,45],five:[...Array(12)].map((_,i)=>i*5),any:[...Array(60)].map((_,i)=>i)};
+const B2={hour:true},B3={hour:true,minute:true};
+const glowList=(c,l)=>{c.clearMarks();l.forEach(n=>c.glow(n))};
+const LESSONS=[
+ {id:'L1',em:'🔢',title:'Круг с цифрами',base:{},steps:[
+  {t:'Привет! Я Совёнок Тик 🦉. Я научу тебя понимать часы со стрелками.'},
+  {t:'Посмотри: часы — это круглая дорожка. На ней по порядку стоят цифры от одного до двенадцати.',
+   anim:async(c,st)=>{for(let n=1;n<=12;n++){if(st())return;c.glow(n);sfx.pop(n);await say(CARD[n])}}},
+  {t:'Наверху стоит цифра двенадцать. С неё всё начинается.',enter:c=>glowList(c,[12])},
+  {t:'По дорожке бегают стрелки. Они бегут всегда в одну сторону — вот так. Это называется «по часовой стрелке».',cfg:{minute:true},T:0,
+   enter:c=>{c.clearMarks();c.animTo(3599,4500,true)}},
+  {t:'Теперь поиграем! Нажимай на цифры по порядку.'}],
+  games:[{type:'order',em:'🔢',title:'Цифры по порядку'},{type:'findNum',em:'🔎',title:'Найди цифру'}]},
+
+ {id:'L2',em:'🐢',title:'Короткая стрелка',base:B2,steps:[
+  {t:'У часов есть стрелки. Вот короткая толстая красная стрелка. Она медленная, как черепаха 🐢. Её зовут часовая.',T:0},
+  {t:'Часовая стрелка показывает, который час. Сейчас она смотрит на цифру три — значит, три часа.',T:0,enter:c=>{c.animTo(H(3),1500);c.glow(3)}},
+  {t:'Попробуй сам! Потяни короткую стрелку пальцем на другую цифру.',T:H(3),drag:{hour:3600},
+   task:{check:(c,x)=>c.T!==x.T0},onRelease:c=>say(cap(promptWords(c.T)))},
+  {t:'Мы живём по часам. В восемь часов утра мы завтракаем 🥣.',T:H(8),enter:c=>glowList(c,[8])},
+  {t:'В девять часов идём в садик 🏫. А в девять вечера пора спать 😴.',T:H(9),enter:c=>glowList(c,[9])},
+  {t:'А если короткая стрелка стоит между тройкой и четвёркой — значит, три часа уже прошли, а четырёх ещё нет.',T:H(3,30),enter:c=>glowList(c,[3,4])},
+  {t:'Запомни: короткая стрелка — часовая. Она показывает, сколько часов. Поиграем!',T:H(5)}],
+  games:[{type:'find',em:'🔎',title:'Где сколько часов?',p:{mins:MINS.whole,hourOnly:true}},
+         {type:'show',em:'👆',title:'Поставь стрелку',p:{mins:MINS.whole,hourOnly:true}}]},
+
+ {id:'L3',em:'🐰',title:'Длинная стрелка',base:B3,steps:[
+  {t:'Знакомься: длинная синяя стрелка. Она быстрая, как зайчик 🐰. Её зовут минутная.',T:H(3)},
+  {t:'Когда длинная стрелка смотрит наверх, на двенадцать, время ровное. Короткая на тройке — значит, ровно три часа.',T:H(3),enter:c=>glowList(c,[12,3])},
+  {t:'Смотри, что будет, если длинная стрелка пробежит целый круг.',T:H(3),cfg:{sector:'min'},
+   anim:async c=>{await c.animTo(H(4),5000);c.glow(4)}},
+  {t:'Короткая стрелка переползла на одну цифру! Было три часа — стало четыре.',T:H(4),enter:c=>glowList(c,[3,4])},
+  {t:'Теперь ты! Прокрути длинную стрелку целый круг и следи за короткой.',T:H(4),cfg:{sector:'min'},drag:{minute:60},
+   task:{check:(c,x)=>Math.abs(c.acc-x.A0)>=3540}},
+  {t:'Запомни: длинная наверху — значит, ровно. А короткая показывает, сколько часов. Поиграем!',T:H(5)}],
+  games:[{type:'find',em:'🔎',title:'Где ровно?',p:{mins:MINS.whole}},
+         {type:'show',em:'👆',title:'Поставь ровно',p:{mins:MINS.whole}}]},
+
+ {id:'L4',em:'🍕',title:'Половина',base:{...B3,sector:'min'},steps:[
+  {t:'Сейчас ровно три часа. Длинная стрелка наверху.',T:H(3)},
+  {t:'Пусть длинная стрелка побежит… Стоп! Она пробежала половину круга и смотрит вниз, на шесть.',T:H(3),enter:c=>c.animTo(H(3,30),3500)},
+  {t:'Закрашена ровно половина круга — как половинка пиццы 🍕. Прошло полчаса.',T:H(3,30)},
+  {t:'А короткая стрелка ушла от тройки и стоит посередине, между тремя и четырьмя.',T:H(3,30),enter:c=>glowList(c,[3,4])},
+  {t:'Три часа уже прошли, идёт четвёртый час. Поэтому так и говорят: половина четвёртого.',T:H(3,30)},
+  {t:'Поставь сам половину пятого. Длинная — вниз, на шесть. Короткая — между четырьмя и пятью.',T:0,drag:{hour:300,minute:300},
+   task:{check:c=>c.T===H(4,30)}},
+  {t:'Ура! Это половина пятого. Поиграем!',T:H(4,30)}],
+  games:[{type:'find',em:'🔎',title:'Найди половину',p:{mins:MINS.half}},
+         {type:'show',em:'👆',title:'Поставь половину',p:{mins:MINS.half}}]},
+
+ {id:'L5',em:'🍰',title:'Четверти',base:{...B3,sector:'min'},steps:[
+  {t:'Разрежем круг-пиццу на четыре одинаковых кусочка. Один кусочек называется четверть.',T:H(3),enter:c=>c.animTo(H(3,15),2500)},
+  {t:'Длинная стрелка смотрит на тройку — прошла одна четверть часа. Говорят: четверть четвёртого.',T:H(3,15),enter:c=>glowList(c,[3])},
+  {t:'Длинная на шестёрке — это уже знакомая половина четвёртого.',T:H(3,15),enter:c=>{glowList(c,[6]);c.animTo(H(3,30),1500)}},
+  {t:'А теперь длинная на девятке. До четырёх часов не хватает одного кусочка — четверти. Говорят: без четверти четыре.',T:H(3,30),enter:c=>{glowList(c,[9]);c.animTo(H(3,45),1500)}},
+  {t:'Запомни: на тройке — четверть, на шестёрке — половина, на девятке — без четверти.',T:H(4),
+   anim:async(c,st)=>{for(const m of [15,30,45]){if(st())return;await c.animTo(H(4,m),1200);if(st())return;await say(timeWords(H(4,m)))}}},
+  {t:'Поставь без четверти шесть.',T:0,drag:{hour:300,minute:300},task:{check:c=>c.T===H(5,45)}},
+  {t:'Отлично! Поиграем!',T:H(5,45)}],
+  games:[{type:'find',em:'🔎',title:'Найди четверть',p:{mins:MINS.quarter}},
+         {type:'show',em:'👆',title:'Поставь четверть',p:{mins:MINS.quarter}}]},
+
+ {id:'L6',em:'🖐️',title:'Минуты по пять',base:{...B3,labels:true},steps:[
+  {t:'Для длинной стрелки каждая цифра — это прыжок на пять минут. Давай посчитаем пятёрками!',T:H(3),
+   anim:async(c,st)=>{for(let k=1;k<=12;k++){if(st())return;await c.animTo(H(3,5*k),350);if(st())return;await say(String(5*k))}}},
+  {t:'Подсказки на ободе показывают минуты. Длинная на двойке — это десять минут. Сейчас десять минут четвёртого.',T:H(3,10)},
+  {t:'Двадцать пять минут четвёртого. Короткая всё ещё между тройкой и четвёркой.',T:H(3,25),enter:c=>glowList(c,[3,4])},
+  {t:'Когда длинная стрелка прошла шестёрку, считают, сколько осталось до ровного. Длинная на десятке — до двенадцати осталось десять минут. Говорят: без десяти четыре.',T:H(3,50),enter:c=>glowList(c,[10])},
+  {t:'Поставь двадцать минут пятого.',T:0,drag:{hour:300,minute:300},task:{check:c=>c.T===H(4,20)}},
+  {t:'Молодец! Поиграем!',T:H(4,20)}],
+  games:[{type:'find',em:'🔎',title:'Найди время',p:{mins:MINS.five}},
+         {type:'show',em:'👆',title:'Поставь время',p:{mins:MINS.five,labels:true}}]},
+
+ {id:'L7',em:'🐭',title:'Секундная стрелка',base:{...B3,second:true},steps:[
+  {t:'Есть ещё одна стрелка — самая тонкая, зелёная. Это секундная. Она быстрая, как мышка 🐭.',T:H(3),enter:c=>c.run(true)},
+  {t:'Слышишь: тик-так? Каждый тик — это одна секунда.',enter:c=>c.run(true,true)},
+  {t:'Пока мышка пробегает целый круг, проходит одна минута. И длинная стрелка делает один маленький шажок — на одну чёрточку.',T:H(3),cfg:{sector:'sec'},
+   enter:c=>c.animTo(H(3,1),9000,true)},
+  {t:'Попробуй сам: покрути зелёную стрелку целый круг и посмотри на длинную.',T:H(3),drag:{second:1},task:{check:(c,x)=>Math.abs(c.acc-x.A0)>=58}},
+  {t:'Секунды нужны, чтобы считать короткое время. А когда называют время, секунды не говорят — только часы и минуты. Поиграем!',T:H(3,1)}],
+  games:[{type:'jump',em:'🤸',title:'Прыгай минуту'},{type:'guess',em:'🙈',title:'Угадай минуту'}]},
+
+ {id:'L8',em:'⌚',title:'Любые минуты',base:{...B3,labels:true},steps:[
+  {t:'Между цифрами есть маленькие чёрточки. Каждая чёрточка — одна минута.',T:H(3),
+   anim:async(c,st)=>{for(let k=1;k<=5;k++){if(st())return;await c.animTo(H(3,k),300);if(st())return;await say(String(k))}}},
+  {t:'Сейчас длинная стрелка на третьей чёрточке после двойки. Это десять и ещё три — тринадцать минут. Тринадцать минут четвёртого.',T:H(3,13)},
+  {t:'На телефоне время пишут цифрами: сначала часы, потом две точки, потом минуты.',big:'3:13',T:H(3,13)},
+  {t:'Половина четвёртого — это три тридцать. А без четверти четыре — три сорок пять.',big:'3:30 → 3:45',T:H(3,13),
+   enter:async(c,st)=>{await c.animTo(H(3,30),1200);await later(2500);if(!st())c.animTo(H(3,45),1200)}},
+  {t:'Поставь 4:18.',big:'4:18',T:0,drag:{hour:60,minute:60},task:{check:c=>c.T===H(4,18)}},
+  {t:'Ты настоящий знаток часов! Поиграем!',T:H(4,18)}],
+  games:[{type:'find',em:'🔎',title:'Найди время',p:{mins:MINS.any}},
+         {type:'show',em:'👆',title:'Поставь время',p:{mins:MINS.any,step:60,digital:true}},
+         {type:'readText',em:'🔢',title:'Как записать?',p:{mins:MINS.any}}]}
+];
+const EXTRAS=[
+ {id:'day',em:'🌞',title:'Мой день',need:2,game:{type:'day',em:'🌞',title:'Мой день'}},
+ {id:'work',em:'🛠️',title:'Мастерская часов'},
+ {id:'live',em:'⏱️',title:'Живые часы'}
+];
+
+/* ===================== Прогресс ===================== */
+const gkey=(li,gi)=>LESSONS[li].id+'-'+gi;
+const gStars=(li,gi)=>S.g[gkey(li,gi)]||0;
+const lessonDone=li=>LESSONS[li].games.every((_,gi)=>gStars(li,gi)>0);
+const unlocked=li=>S.all||li===0||lessonDone(li-1);
+function lessonStars(li){const L=LESSONS[li];const done=L.games.filter((_,gi)=>gStars(li,gi)>0);if(!done.length)return 0;
+  return Math.round(L.games.reduce((s,_,gi)=>s+gStars(li,gi),0)/L.games.length)}
+const starStr=n=>'★'.repeat(n)+'☆'.repeat(3-n);
+
+/* ===================== Карта ===================== */
+function showMap(){
+  go(`<div class="hero"><div class="owl">🦉</div><div><h2>Совёнок Тик учит часы</h2><p>Проходи уроки по порядку: за каждую игру — звёздочки</p></div></div>
+  <div class="grid" id="lessons"></div>
+  <h3>Ещё игры</h3><div class="grid" id="extras"></div>
+  <p class="small" style="margin-top:28px">Для взрослых: <button class="link" id="unl">${S.all?'закрыть уроки по порядку':'открыть все уроки сразу'}</button> · <button class="link" id="rst">сбросить прогресс</button></p>`,'Часики');
+  const firstOpen=LESSONS.findIndex((_,i)=>unlocked(i)&&!lessonDone(i));
+  const lg=$('#lessons');
+  LESSONS.forEach((L,i)=>{const b=document.createElement('button');const open=unlocked(i);
+    b.className='card'+(open?'':' locked')+(i===firstOpen?' next':'');
+    b.innerHTML=`<span class="n">${i+1}</span><div class="em">${open?L.em:'🔒'}</div><div class="tt">${L.title}</div><div class="st">${open?starStr(lessonStars(i)):'&nbsp;'}</div>`;
+    b.onclick=()=>{if(open)showLesson(i);else{sfx.bad();say('Этот урок откроется, когда пройдёшь предыдущий.')}};lg.appendChild(b)});
+  const eg=$('#extras');
+  EXTRAS.forEach(X=>{const b=document.createElement('button');const open=!X.need||S.all||lessonDone(X.need);
+    b.className='card'+(open?'':' locked');
+    const st=X.game?`<div class="st">${open?starStr(S.g['X-'+X.id]||0):'после урока '+(X.need+1)}</div>`:'';
+    b.innerHTML=`<div class="em">${open?X.em:'🔒'}</div><div class="tt">${X.title}</div>${st}`;
+    b.onclick=()=>{if(!open){sfx.bad();say('Эта игра откроется после урока '+(X.need+1)+'.');return}
+      if(X.id==='work')showWorkshop();else if(X.id==='live')showLive();else startGame(-1,X.game,'X-'+X.id)};eg.appendChild(b)});
+  $('#unl').onclick=()=>{S.all=!S.all;save();showMap()};
+  $('#rst').onclick=e=>{const b=e.target;if(b.dataset.sure){S.g={};S.seen={};save();showMap()}else{b.dataset.sure=1;b.textContent='точно сбросить? нажми ещё раз'}};
+}
+
+/* ===================== Урок: меню ===================== */
+function showLesson(li){
+  const L=LESSONS[li];
+  go(`<div class="hero"><div class="owl">${L.em}</div><div><h2>Урок ${li+1}. ${L.title}</h2><p>Сначала послушай объяснение, потом поиграй</p></div></div>
+  <div class="grid" id="lg"></div>`,`Урок ${li+1}`);
+  const g=$('#lg');
+  const ex=document.createElement('button');ex.className='card'+(S.seen[L.id]?'':' next');
+  ex.innerHTML=`<div class="em">🦉</div><div class="tt">Объяснение</div><div class="st">${S.seen[L.id]?'✓':'&nbsp;'}</div>`;
+  ex.onclick=()=>runIntro(li);g.appendChild(ex);
+  L.games.forEach((G,gi)=>{const b=document.createElement('button');b.className='card'+(S.seen[L.id]&&!gStars(li,gi)&&L.games.findIndex((_,k)=>!gStars(li,k))===gi?' next':'');
+    b.innerHTML=`<div class="em">${G.em}</div><div class="tt">${G.title}</div><div class="st">${starStr(gStars(li,gi))}</div>`;
+    b.onclick=()=>startGame(li,gi);g.appendChild(b)});
+}
+
+/* ===================== Урок: объяснение ===================== */
+function runIntro(li){
+  const L=LESSONS[li];
+  const tok=go(`<div class="stage"><div class="clockcol" id="cc"></div>
+    <div><div class="bubble"><div class="owl">🦉</div><div class="txt"><div class="q" id="q"></div><div class="big" id="big"></div></div><button class="say" id="rep">🔊</button></div>
+    <div class="fb" id="fb"></div>
+    <div class="row actions"><button class="btn sec" id="back">◀</button><button class="btn go" id="next">Дальше ▶</button></div>
+    <div class="steps" id="steps"></div></div></div>`,`Урок ${li+1}. ${L.title}`);
+  const c=new Clock($('#cc'));let k=0,stepTok=0;
+  $('#steps').innerHTML=L.steps.map(()=>'<i></i>').join('');
+  async function run(){
+    const st=L.steps[k],my=++stepTok,stale=()=>!alive(tok)||my!==stepTok;
+    c.run(false);c.onChange=null;c.onRelease=null;c.secFull=false;c.clearMarks();
+    c.config({...L.base,...(st.cfg||{}),drag:st.drag||null});
+    if(st.T!=null)c.set(st.T);
+    $('#q').textContent=st.t;$('#big').textContent=st.big||'';$('#fb').textContent='';$('#fb').className='fb';
+    [...$('#steps').children].forEach((e,i)=>e.classList.toggle('on',i<=k));
+    $('#back').disabled=k===0;
+    const last=k===L.steps.length-1;$('#next').textContent=last?'Играть ▶':'Дальше ▶';
+    const nx=$('#next');
+    if(st.task){nx.disabled=true;const x={T0:c.T,A0:c.acc};let done=false;
+      const chk=()=>{if(!done&&!stale()&&st.task.check(c,x)){done=true;nx.disabled=false;sfx.good();burst();
+        $('#fb').textContent='Получилось! Нажми «Дальше».';$('#fb').className='fb ok';later(400).then(()=>{if(!stale())say(pick(PRAISE)+' Получилось!')})}};
+      c.onChange=chk;
+      c.onRelease=cc=>{chk();if(st.onRelease)st.onRelease(cc)};
+    }else nx.disabled=false;
+    if(st.enter)st.enter(c,stale);
+    await say(st.t);if(stale())return;
+    if(st.anim)await st.anim(c,stale);
+  }
+  $('#next').onclick=()=>{actx();if(k<L.steps.length-1){k++;run()}else{S.seen[L.id]=1;save();startGame(li,0)}};
+  $('#back').onclick=()=>{if(k>0){k--;run()}};
+  $('#rep').onclick=()=>say(L.steps[k].t);
+  run();
+}
+
+/* ===================== Игры ===================== */
+const ROUNDS=5;
+function starsFor(ok,n){const r=ok/n;return r>=.8?3:r>=.4?2:1}
+function gen(p,avoid=[]){let T,i=0;do{T=H(rnd(12),pick(p.mins));i++}while(avoid.includes(T)&&i<50);return T}
+function distract(T,p){
+  const h=Math.floor(T/3600),m=mOf(T),classic=[H(h+1,m),H(h-1,m)];
+  if(p.hourOnly)classic.push(H(h+6,0));
+  else if(m%5===0)classic.push(H(m/5,(h%12)*5));
+  const out=[];for(const x of shuffle(classic))if(x!==T&&!out.includes(x))out.push(x);
+  let i=0;while(out.length<4&&i<60){const x=gen(p);if(x!==T&&!out.includes(x))out.push(x);i++}
+  return out.slice(0,2);
+}
+function minuteSpot(m){const ORD=['','первую','вторую','третью','четвёртую'];
+  if(m===0)return 'наверх, на двенадцать';if(m%5===0)return 'на цифру '+m/5;
+  return 'на '+ORD[m%5]+' чёрточку после цифры '+(Math.floor(m/5)||12)}
+function showHint(T,target,hourOnly){
+  const th=hOf(target),tm=mOf(target),cm=mOf(T),nx=th%12+1;
+  if(hourOnly)return 'Короткая стрелка должна смотреть на цифру '+th+'.';
+  if(cm!==tm)return 'Длинная стрелка должна смотреть '+minuteSpot(tm)+'.';
+  return tm===0?'Длинная — верно! Теперь короткая: она должна смотреть на цифру '+th+'.'
+               :'Длинная — верно! А короткая должна стоять между '+th+' и '+nx+'.';
+}
+
+function gameShell(title,opts={}){
+  const tok=go(`<div class="dots" id="dots"></div><div class="stage"><div class="clockcol" id="cc"></div>
+   <div><div class="bubble"><div class="owl">🦉</div><div class="txt"><div class="q" id="q"></div><div class="big" id="big"></div></div><button class="say" id="rep">🔊</button></div>
+   <div id="area"></div><div class="fb" id="fb"></div><div class="row actions" id="act"></div></div></div>`,title);
+  const ui={tok,q:$('#q'),big:$('#big'),area:$('#area'),fb:$('#fb'),act:$('#act'),cc:$('#cc'),
+    dots(n,cur,res){$('#dots').innerHTML=Array.from({length:n},(_,i)=>`<i class="dot ${res[i]||(i===cur?'cur':'')}"></i>`).join('')},
+    ask(text,big=''){ui.q.textContent=text;ui.big.textContent=big;ui.fb.textContent='';ui.fb.className='fb';ui.lastSay=text;return say(text)},
+    fbk(text,ok){ui.fb.textContent=text;ui.fb.className='fb '+(ok?'ok':'no')},
+    lastSay:''};
+  $('#rep').onclick=()=>say(ui.lastSay);
+  return ui;
+}
+
+function startGame(li,gi,xkey){
+  const G=typeof gi==='object'?gi:LESSONS[li].games[gi];
+  const key=xkey||gkey(li,gi);
+  const finish=stars=>{S.g[key]=Math.max(S.g[key]||0,stars);save();showResult(li,gi,stars,G)};
+  const title=G.em+' '+G.title;
+  ({order:gOrder,findNum:gFindNum,find:gFind,show:gShow,readText:gReadText,day:gDay,jump:gJump,guess:gGuess})[G.type](G.p||{},title,finish);
+}
+
+/* --- Цифры по порядку --- */
+function gOrder(p,title,finish){
+  const ui=gameShell(title);const c=new Clock(ui.cc).config({numClick:true});
+  let next=1,err=0,miss=0;$('#dots').style.display='none';
+  ui.ask('Нажимай на цифры по порядку: один, два, три…');
+  c.onNumber=async n=>{
+    if(next>12)return;
+    if(n===next){c.mark(n,'done');c.glow(n,false);sfx.pop(n);miss=0;say(CARD[n]);next++;
+      if(next>12){sfx.win();burst();ui.fbk('Все цифры по порядку!',true);await later(600);await say('Ура! Все цифры по порядку!');if(alive(ui.tok))finish(err<=1?3:err<=4?2:1)}}
+    else if(c.nums[n].classList.contains('done'))return;
+    else{err++;miss++;sfx.bad();c.mark(n,'bad');later(500).then(()=>c.mark(n,'bad',false));
+      const t='Это цифра '+n+'. А какая идёт после '+(next-1||'начала')+'?';
+      ui.fbk(next===1?'Начни с цифры один.':t,false);say(next===1?'Начни с цифры один.':t);if(miss>=2)c.glow(next)}};
+}
+
+/* --- Найди цифру --- */
+function gFindNum(p,title,finish){
+  const ui=gameShell(title);const c=new Clock(ui.cc).config({numClick:true});
+  const list=shuffle([...Array(12)].map((_,i)=>i+1)).slice(0,ROUNDS);let r=-1,ok=0,tries=0,lock=false;const res=[];
+  const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));tries=0;lock=false;c.clearMarks();ui.dots(ROUNDS,r,res);
+    ui.ask('Найди цифру '+CARD[list[r]]+'.',String(list[r]))};
+  c.onNumber=async n=>{if(lock)return;const t=list[r];
+    if(n===t){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';c.mark(n,'done');sfx.good();burst();ui.fbk(pick(PRAISE),true);await say(pick(PRAISE));await later(500);if(alive(ui.tok))next()}
+    else{tries++;sfx.bad();c.mark(n,'bad');later(600).then(()=>c.mark(n,'bad',false));ui.fbk('Это '+n+'. Ищи '+t+'.',false);say('Это '+CARD[n]+'. Ищи '+CARD[t]+'.');if(tries>=2)c.glow(t)}};
+  next();
+}
+
+/* --- Найди часы (3 маленьких) --- */
+function gFind(p,title,finish){
+  const ui=gameShell(title);ui.cc.innerHTML='<div class="minis" id="minis"></div>';$('.stage').classList.add('wide');
+  let r=-1,ok=0,prev=[];const res=[];
+  const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));ui.dots(ROUNDS,r,res);
+    CLOCKS=[];const box=$('#minis');box.innerHTML='';
+    const target=gen(p,prev);prev.push(target);const opts=shuffle([target,...distract(target,p)]);
+    let tries=0,lock=false;const words=promptWords(target);
+    opts.forEach(T=>{const d=document.createElement('div');d.className='mini';box.appendChild(d);
+      new Clock(d,{mini:true}).config({hour:true,minute:!p.hourOnly}).set(T);
+      d.onclick=async()=>{if(lock)return;actx();
+        if(T===target){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';d.classList.add('ok');sfx.good();burst();
+          const ph=pick(PRAISE);ui.fbk(ph+' '+cap(words)+'.',true);await say(ph+' '+cap(words)+'.');await later(300);if(alive(ui.tok))next()}
+        else{tries++;d.classList.add('no','shake');sfx.bad();
+          if(tries>=2){lock=true;res[r]='meh';const good=[...box.children][opts.indexOf(target)];good.classList.add('ok','pulse');
+            ui.fbk('Вот где '+words+'.',false);await say('Смотри, вот где '+words+'.');await later(900);if(alive(ui.tok))next()}
+          else{ui.fbk('Посмотри ещё раз.',false);say('Посмотри ещё раз. Где '+words+'?')}}};
+    });
+    ui.ask('Где '+words+'?',p.digital?fmt(target):'');
+  };
+  next();
+}
+
+/* --- Поставь стрелки --- */
+function gShow(p,title,finish){
+  const ui=gameShell(title);const c=new Clock(ui.cc);const step=p.step||300;
+  const base={hour:true,minute:!p.hourOnly,labels:!!p.labels,drag:p.hourOnly?{hour:3600}:{hour:step,minute:step}};
+  c.config(base);
+  ui.act.innerHTML=`<button class="btn go" id="chk">Проверить ✓</button>${p.hourOnly?'':'<button class="btn sec sm" id="hint">💡 Подсказка</button>'}`;
+  let r=-1,ok=0,target=0,tries=0,lock=false,prev=[0];const res=[];
+  const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));ui.dots(ROUNDS,r,res);
+    target=gen(p,prev);prev.push(target);tries=0;lock=false;c.set(0);$('#chk').disabled=false;
+    ui.ask('Поставь '+promptWords(target)+'.',p.digital?fmt(target):'')};
+  $('#chk').onclick=async()=>{if(lock)return;actx();
+    if(c.T===target){lock=true;$('#chk').disabled=true;if(!tries)ok++;res[r]=tries?'meh':'ok';sfx.good();burst();
+      const ph=pick(PRAISE)+' '+cap(promptWords(target))+'.';ui.fbk(ph,true);await say(ph);await later(400);if(alive(ui.tok))next()}
+    else{tries++;sfx.bad();c.box.classList.add('shake');later(500).then(()=>c.box.classList.remove('shake'));
+      if(tries>=3){lock=true;$('#chk').disabled=true;res[r]='meh';ui.fbk('Смотри, вот так!',false);await c.animTo(target,1600);
+        await say('Смотри, вот так: '+promptWords(target)+'.');await later(1200);if(alive(ui.tok))next()}
+      else{const h=showHint(c.T,target,p.hourOnly);ui.fbk(h,false);say(h)}}};
+  const hb=$('#hint');if(hb)hb.onclick=()=>{c.cfg.labels=!c.cfg.labels;c.apply()};
+  next();
+}
+
+/* --- Как записать цифрами --- */
+function gReadText(p,title,finish){
+  const ui=gameShell(title);const c=new Clock(ui.cc).config({hour:true,minute:true});
+  let r=-1,ok=0,prev=[];const res=[];
+  const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));ui.dots(ROUNDS,r,res);
+    const target=gen(p,prev);prev.push(target);c.set(target);
+    const opts=shuffle([target,...distract(target,p)]);let tries=0,lock=false;
+    ui.area.innerHTML='<div class="opts"></div>';const box=$('.opts',ui.area);
+    opts.forEach(T=>{const b=document.createElement('button');b.className='opt';b.textContent=fmt(T);box.appendChild(b);
+      b.onclick=async()=>{if(lock)return;actx();
+        if(T===target){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';b.classList.add('ok');sfx.good();burst();
+          const t=pick(PRAISE)+' '+fmt(T)+' — '+timeWords(T)+'.';ui.fbk(t,true);await say(t);await later(300);if(alive(ui.tok))next()}
+        else{tries++;b.classList.add('no','shake');sfx.bad();
+          if(tries>=2){lock=true;res[r]='meh';const g=[...box.children][opts.indexOf(target)];g.classList.add('ok','pulse');
+            const t='Правильно так: '+fmt(target)+' — '+timeWords(target)+'.';ui.fbk(t,false);await say(t);await later(900);if(alive(ui.tok))next()}
+          else{ui.fbk('Не совсем. Посмотри на стрелки ещё раз.',false);say('Не совсем. Посмотри ещё раз.')}}};
+    });
+    ui.ask('Который час? Как это записать цифрами?');
+  };
+  next();
+}
+
+/* --- Мой день --- */
+const DAY=[
+  {T:H(7),p:'утро',e:'⏰',n:'Просыпаемся'},{T:H(8),p:'утро',e:'🥣',n:'Завтракаем'},{T:H(9),p:'утро',e:'🏫',n:'Идём в садик'},
+  {T:H(1),p:'день',e:'🍲',n:'Обедаем'},{T:H(4),p:'день',e:'🍎',n:'Полдник'},{T:H(5,30),p:'вечер',e:'🛝',n:'Гуляем'},
+  {T:H(7),p:'вечер',e:'🍝',n:'Ужинаем'},{T:H(9),p:'вечер',e:'😴',n:'Ложимся спать'}];
+const PER={утро:['☀️ Утро','утра'],день:['🌤️ День','дня'],вечер:['🌙 Вечер','вечера']};
+function gDay(p,title,finish){
+  const ui=gameShell(title);const c=new Clock(ui.cc).config({hour:true,minute:true});
+  const badge=document.createElement('div');badge.className='badge';c.box.appendChild(badge);
+  const N=6,list=shuffle(DAY).slice(0,N);let r=-1,ok=0;const res=[];
+  const next=()=>{r++;if(r>=N)return finish(starsFor(ok,N));ui.dots(N,r,res);
+    const it=list[r];c.set(it.T);badge.textContent=PER[it.p][0];
+    const others=shuffle(DAY.filter(x=>x!==it&&!(x.T===it.T))).slice(0,2);const opts=shuffle([it,...others]);let tries=0,lock=false;
+    ui.area.innerHTML='<div class="opts"></div>';const box=$('.opts',ui.area);
+    opts.forEach(o=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`${o.e}<small>${o.n}</small>`;box.appendChild(b);
+      b.onclick=async()=>{if(lock)return;actx();
+        const phrase=cap(timeWords(it.T))+' '+PER[it.p][1]+' — '+it.n.toLowerCase()+'!';
+        if(o===it){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';b.classList.add('ok');sfx.good();burst();ui.fbk(phrase,true);await say(pick(PRAISE)+' '+phrase);await later(300);if(alive(ui.tok))next()}
+        else{tries++;b.classList.add('no','shake');sfx.bad();
+          if(tries>=2){lock=true;res[r]='meh';[...box.children][opts.indexOf(it)].classList.add('ok','pulse');ui.fbk(phrase,false);await say(phrase);await later(900);if(alive(ui.tok))next()}
+          else{ui.fbk('Нет, '+o.n.toLowerCase()+' в другое время. Посмотри на часы ещё раз.',false);say('Нет. Посмотри на часы ещё раз.')}}};
+    });
+    ui.ask('Посмотри на часы. Что мы делаем в это время?');
+  };
+  next();
+}
+
+/* --- Прыгай минуту --- */
+function gJump(p,title,finish){
+  const ui=gameShell(title);$('#dots').style.display='none';
+  const c=new Clock(ui.cc).config({hour:true,minute:true,second:true,sector:'sec'}).set(H(3));
+  ui.act.innerHTML='<button class="btn go" id="go">Старт ▶</button>';
+  ui.ask('Нажми «Старт» и прыгай, пока зелёная стрелка-мышка не пробежит целый круг!');
+  $('#go').onclick=()=>{actx();$('#go').disabled=true;let n=0;c.set(H(3));ui.fbk('Прыгай! 🤸',true);say('Прыгай!');
+    c.run(true,true,async cl=>{n++;if(n===30)say('Половина минуты! Прыгай дальше!');
+      if(n>=60){cl.run(false);cl.secFull=true;cl.render();sfx.win();burst();ui.fbk('Целая минута! Длинная стрелка сделала шажок.',true);
+        await say('Ура! Прошла целая минута! Посмотри: длинная стрелка сделала один шажок.');await later(800);if(alive(ui.tok))finish(3)}})};
+}
+
+/* --- Угадай минуту --- */
+function gGuess(p,title,finish){
+  const ui=gameShell(title);const N=3;let r=-1,ok=0,t0=0;const res=[];
+  const c=new Clock(ui.cc).config({hour:true,minute:true,second:true,sector:'sec'}).set(H(3));
+  const cover=document.createElement('div');cover.className='cover';cover.textContent='🙈';cover.style.display='none';c.box.appendChild(cover);
+  const next=()=>{r++;if(r>=N)return finish(ok>=2?3:ok===1?2:1);ui.dots(N,r,res);c.secFull=false;c.set(H(3));
+    ui.act.innerHTML='<button class="btn go" id="go">Старт ▶</button>';
+    ui.ask('Нажми «Старт», закрой глаза и считай про себя. Когда покажется, что прошла минута, нажми «Стоп».');
+    $('#go').onclick=()=>{actx();sfx.pop();t0=performance.now();cover.style.display='';ui.fbk('Тсс… Минута идёт…',true);
+      ui.act.innerHTML='<button class="btn" id="stop">Стоп ■</button>';
+      $('#stop').onclick=async()=>{const s=Math.max(1,Math.min(119,Math.round((performance.now()-t0)/1000)));cover.style.display='none';
+        ui.act.innerHTML='';c.set(H(3));const good=Math.abs(s-60)<=12;if(good)ok++;res[r]=good?'ok':'meh';
+        await c.animTo(H(3)+s,Math.min(2500,400+s*30),true);if(s>=60){c.secFull=true;c.render()}
+        const sec=s+' '+plural(s,'секунда','секунды','секунд');
+        const v=Math.abs(s-60)<=5?'Почти точно! Ты чувствуешь минуту!':good?'Совсем рядом с минутой!':s<60?'Минута ещё не закончилась — она длиннее.':'Минута уже прошла — она короче.';
+        if(good){sfx.good();burst()}else sfx.bad();
+        ui.fbk('Прошло '+sec+'. '+v,good);await say('Прошло '+sec+'. '+v);if(!alive(ui.tok))return;
+        ui.act.innerHTML=`<button class="btn go" id="nx">${r<N-1?'Ещё попытка ▶':'Готово ▶'}</button>`;$('#nx').onclick=next}};
+  };
+  next();
+}
+
+/* ===================== Результат ===================== */
+function showResult(li,gi,stars,G){
+  const inLesson=li>=0;const L=inLesson?LESSONS[li]:null;
+  const lastGame=inLesson&&gi===L.games.length-1;
+  const newLesson=inLesson&&li<LESSONS.length-1&&lessonDone(li);
+  const msg=stars===3?'Великолепно!':stars===2?'Хорошо! Можно ещё лучше.':'Ты молодец, что старался! Давай ещё раз.';
+  go(`<div class="result"><div class="owl" style="font-size:80px">🦉</div>
+   <div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'':'e'}">⭐</span>`).join('')}</div>
+   <h2>${msg}</h2>${lastGame&&newLesson?'<p class="q">Открыт новый урок! 🎉</p>':''}
+   <div class="row"><button class="btn sec" id="again">↻ Ещё раз</button>
+   ${inLesson&&!lastGame?'<button class="btn go" id="nx">Следующая игра ▶</button>':''}
+   ${lastGame&&newLesson?'<button class="btn go" id="nl">Урок '+(li+2)+' ▶</button>':''}
+   <button class="btn sec" id="map">🗺️ Карта</button></div></div>`,'Итог');
+  sfx.win();if(stars>=2)burst();say(msg+(lastGame&&newLesson?' Открыт новый урок!':''));
+  $('#again').onclick=()=>inLesson?startGame(li,gi):startGame(-1,G,'X-day');
+  $('#map').onclick=showMap;
+  const nx=$('#nx');if(nx)nx.onclick=()=>startGame(li,gi+1);
+  const nl=$('#nl');if(nl)nl.onclick=()=>showLesson(li+1);
+}
+
+/* ===================== Мастерская ===================== */
+function showWorkshop(){
+  const tok=go(`<div class="stage"><div class="clockcol" id="cc"></div><div>
+   <div class="bubble"><div class="owl">🛠️</div><div class="txt"><div class="q" id="w1" style="font-size:28px"></div><div class="small" id="w2" style="font-size:18px;margin-top:6px"></div><div class="big" id="w3"></div></div><button class="say" id="rep">🔊</button></div>
+   <div class="legend"><span style="color:var(--hour)">часовая</span><span style="color:var(--minute)">минутная</span><span style="color:var(--second)">секундная</span></div>
+   <div class="row actions"><button class="btn sec sm" data-d="-3600">−1 час</button><button class="btn sec sm" data-d="3600">+1 час</button><button class="btn sec sm" data-d="-300">−5 мин</button><button class="btn sec sm" data-d="300">+5 мин</button><button class="btn sm" id="rnd">🎲 Случайно</button></div>
+   <div class="tog" id="tog"><button data-k="labels">Минуты на ободе</button><button data-k="sector">Закрашивать минуты</button><button data-k="second">Секундная стрелка</button><button data-k="digital">Цифрами</button><button data-k="auto">Говорить</button></div>
+   </div></div>`,'🛠️ Мастерская часов');
+  const o={labels:true,sector:true,second:false,digital:true,auto:true};
+  const c=new Clock($('#cc'));
+  const cfg=()=>c.config({hour:true,minute:true,second:o.second,labels:o.labels,sector:o.sector?'min':false,drag:{hour:60,minute:60,second:1}});
+  const upd=()=>{$('#w1').textContent=cap(timeWords(c.T));$('#w2').textContent='или: '+fullWords(c.T);$('#w3').textContent=o.digital?fmt(c.T):'';
+    [...$('#tog').children].forEach(b=>b.classList.toggle('on',!!o[b.dataset.k]))};
+  const speak=()=>say(cap(timeWords(c.T)));
+  cfg();c.set(H(3));upd();
+  c.onChange=upd;c.onRelease=()=>{if(o.auto)speak()};
+  document.querySelectorAll('[data-d]').forEach(b=>b.onclick=async()=>{await c.animTo(c.T+ +b.dataset.d,500);upd();if(o.auto)speak()});
+  $('#rnd').onclick=async()=>{await c.animTo(H(rnd(12),rnd(12)*5),900);upd();if(o.auto)speak()};
+  $('#rep').onclick=speak;
+  $('#tog').onclick=e=>{const k=e.target.dataset&&e.target.dataset.k;if(!k)return;o[k]=!o[k];const T=c.T;cfg();c.set(T);upd()};
+}
+
+/* ===================== Живые часы ===================== */
+function showLive(){
+  go(`<div class="stage"><div class="clockcol" id="cc"></div><div>
+   <div class="bubble"><div class="owl">🦉</div><div class="txt"><div class="small" id="per" style="font-size:20px"></div><div class="q" id="w1" style="font-size:28px"></div><div class="big" id="w3"></div></div><button class="say" id="rep">🔊</button></div>
+   <div class="tog" id="tog"><button data-k="tick">Тик-так</button><button data-k="digital">Цифрами</button><button data-k="labels">Минуты на ободе</button></div>
+   <p class="small" style="margin-top:16px">Это настоящее время на твоём устройстве. Спроси у совёнка: «Который час?»</p>
+   </div></div>`,'⏱️ Живые часы');
+  const o={tick:false,digital:true,labels:false};
+  const c=new Clock($('#cc'));
+  const now=()=>{const d=new Date();return{T:H(d.getHours(),d.getMinutes(),d.getSeconds()),h:d.getHours()}};
+  const per=h=>h>=5&&h<12?['☀️ Утро','утра']:h>=12&&h<17?['🌤️ День','дня']:h>=17&&h<23?['🌙 Вечер','вечера']:['🌌 Ночь','ночи'];
+  const upd=()=>{const n=now();c.set(n.T);if(o.tick)sfx.tick(n.T%2);$('#per').textContent=per(n.h)[0];
+    $('#w1').textContent=cap(timeWords(n.T));$('#w3').textContent=o.digital?fmt(n.T):'';
+    [...$('#tog').children].forEach(b=>b.classList.toggle('on',!!o[b.dataset.k]))};
+  const cfg=()=>c.config({hour:true,minute:true,second:true,labels:o.labels});
+  cfg();upd();every(upd,1000);
+  $('#rep').onclick=()=>{const n=now();say('Сейчас '+timeWords(n.T)+' '+per(n.h)[1]+'.')};
+  $('#tog').onclick=e=>{const k=e.target.dataset&&e.target.dataset.k;if(!k)return;o[k]=!o[k];cfg();upd()};
+}
+
+/* ===================== Шапка ===================== */
+function hdr(){$('#sndBtn').textContent=S.sound?'🔔':'🔕';$('#sndBtn').classList.toggle('off',!S.sound);$('#voiceBtn').classList.toggle('off',!S.voice)}
+$('#homeBtn').onclick=showMap;
+$('#sndBtn').onclick=()=>{S.sound=!S.sound;save();hdr();actx();sfx.pop()};
+$('#voiceBtn').onclick=()=>{S.voice=!S.voice;save();hdr();if(!S.voice&&window.speechSynthesis)speechSynthesis.cancel();else say('Голос включён')};
+hdr();showMap();
+</script>
+</body>
+</html>
