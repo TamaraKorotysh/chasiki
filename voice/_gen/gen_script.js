@@ -48,7 +48,7 @@ let lm;
 while((lm=lessonRe.exec(html))){
   const L=lm[1];const body=lm[0];lessonNo++;
   const steps=[...body.matchAll(/\{t:'([^']+)'/g)].map(x=>x[1]);
-  block('intro-'+L,'Урок '+lessonNo+' «'+lm[2]+'»: объяснение Тикуши','[warmly]',
+  block('intro-'+L,'Урок '+lessonNo+' «'+lm[2]+'»: объяснение будильника','[warmly]',
     steps.map((t,i)=>({id:`intro.${L}.${i+1}`,text:clean(dig(t))})),
     'Длинные фразы. Тёплый рассказ ребёнку, с улыбкой, не торопясь.');
 }

@@ -62,6 +62,7 @@ svg.clock.numclick .num{cursor:pointer}
 .owl{font-size:46px;line-height:1;flex:none}
 .masc{width:62px;height:auto;flex:none;overflow:visible}
 .masc.lg{width:110px}.masc.xl{width:140px}
+@media (max-width:360px){.hero .masc.xl{width:100px}}
 .masc .eyes{transform-origin:50px 53px;animation:blink 4.5s infinite}
 @keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
 .masc .m-joy,.masc .m-oops{display:none}
@@ -118,7 +119,7 @@ svg.clock.numclick .num{cursor:pointer}
 /* map */
 .hero{display:flex;gap:14px;align-items:center;margin:6px 0 18px}
 .hero .owl{font-size:64px}
-.hero h2{margin:0;font-size:28px;font-weight:900}
+.hero h2{margin:0;font-size:clamp(20px,5.6vw,28px);font-weight:900}
 .hero p{margin:4px 0 0;color:var(--muted);font-weight:700;font-size:17px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
 .card{position:relative;background:var(--card);border:none;border-radius:22px;padding:16px 12px 14px;box-shadow:var(--sh);cursor:pointer;text-align:center;touch-action:manipulation}
@@ -175,8 +176,8 @@ const hOf=T=>Math.floor(norm(T)/3600)%12||12;
 const mOf=T=>Math.floor(norm(T)/60)%60;
 const fmt=T=>hOf(T)+':'+String(mOf(T)).padStart(2,'0');
 
-/* ===================== Талисман: будильник Тикуша ===================== */
-function mascot(cls=''){return `<svg class="masc ${cls}" viewBox="0 0 100 112" aria-label="Тикуша">
+/* ===================== Талисман: будильник Динь-дилинь ===================== */
+function mascot(cls=''){return `<svg class="masc ${cls}" viewBox="0 0 100 112" aria-label="Динь-дилинь">
  <g class="bells"><path d="M30 13 Q50 1 70 13" stroke="#2b2d42" stroke-width="4" fill="none" stroke-linecap="round"/>
   <circle cx="50" cy="6" r="4" fill="#2b2d42"/>
   <path d="M10 34 A16 16 0 0 1 36 14 Z" fill="#ffd166" stroke="#d99a00" stroke-width="2.5" stroke-linejoin="round"/>
@@ -468,7 +469,7 @@ const B2={hour:true},B3={hour:true,minute:true};
 const glowList=(c,l)=>{c.clearMarks();l.forEach(n=>c.glow(n))};
 const LESSONS=[
  {id:'L1',em:'🔢',title:'Круг с цифрами',base:{},steps:[
-  {t:'Привет! Я будильник Тикуша. Я живу в часах и знаю про время всё-всё. Я научу тебя понимать часы со стрелками.'},
+  {t:'Привет! Я будильник Динь-дилинь. Я живу в часах и знаю про время всё-всё. Я научу тебя понимать часы со стрелками.'},
   {t:'Посмотри: часы — это круглая дорожка. На ней по порядку стоят цифры от одного до двенадцати.',
    anim:async(c,st)=>{for(let n=1;n<=12;n++){if(st())return;c.glow(n);sfx.pop(n);await say(CARD[n])}}},
   {t:'Наверху стоит цифра двенадцать. С неё всё начинается.',enter:c=>glowList(c,[12])},
@@ -673,7 +674,7 @@ function dayBar(host){
 
 /* ===================== Карта ===================== */
 function showMap(){
-  go(`<div class="hero">${mascot("xl")}<div><h2>Тикуша учит часы</h2><p>Проходи уроки по порядку: за каждую игру — звёздочки</p></div></div>
+  go(`<div class="hero">${mascot("xl")}<div><h2><span style="white-space:nowrap">Динь-дилинь</span> учит часы</h2><p>Проходи уроки по порядку: за каждую игру — звёздочки</p></div></div>
   <div class="grid" id="lessons"></div>
   <h3>Ещё игры</h3><div class="grid" id="extras"></div>
   <p class="small" style="margin-top:28px">Для взрослых: <button class="link" id="unl">${S.all?'закрыть уроки по порядку':'открыть все уроки сразу'}</button> · <button class="link" id="rst">сбросить прогресс</button></p>`,'Часики');
