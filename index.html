@@ -60,6 +60,33 @@ svg.clock.numclick .num{cursor:pointer}
 .cap{fill:#2b2d42}.cap2{fill:var(--second)}
 .bubble{display:flex;gap:12px;align-items:flex-start;background:var(--card);border-radius:22px;padding:16px;box-shadow:var(--sh)}
 .owl{font-size:46px;line-height:1;flex:none}
+.masc{width:62px;height:auto;flex:none;overflow:visible}
+.masc.lg{width:110px}.masc.xl{width:140px}
+.masc .eyes{transform-origin:50px 53px;animation:blink 4.5s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+.masc .m-joy,.masc .m-oops{display:none}
+.masc.joy .m-smile,.masc.oops .m-smile{display:none}
+.masc.joy .m-joy{display:inline}.masc.oops .m-oops{display:inline}
+.masc .bells{transform-origin:50px 20px}
+.masc.joy .bells{animation:ring .12s linear 6}
+.masc.joy{animation:hop .5s ease-out}
+.masc .wave{transform-origin:17px 58px;animation:wave 2.6s ease-in-out infinite}
+@keyframes ring{25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+@keyframes hop{40%{transform:translateY(-10px)}}
+@keyframes wave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-16deg)}80%{transform:rotate(8deg)}90%{transform:rotate(-12deg)}}
+.harc{fill:rgba(230,57,88,.14)}
+.r24{fill:#7a4fd0;font-size:12.5px;font-weight:900;text-anchor:middle;dominant-baseline:central;font-family:'Nunito',system-ui,sans-serif}
+.clockcol{flex-direction:column;align-items:center;gap:12px}
+.daybar{width:100%;max-width:440px}
+.daybar .track{position:relative;height:30px;border-radius:15px;overflow:hidden;display:flex;box-shadow:var(--sh)}
+.daybar .track i{display:block;height:100%}
+.daybar .mk{position:absolute;top:26px;width:4px;height:38px;background:#2b2d42;border-radius:2px;transform:translateX(-2px);transition:left .25s}
+.daybar .mk::after{content:attr(data-e);position:absolute;top:-30px;left:50%;transform:translateX(-50%);font-size:24px}
+.daybar .wrap{position:relative;padding-top:30px}
+.daybar .lb{display:flex;justify-content:space-between;font-weight:900;font-size:14px;color:var(--muted);margin-top:4px}
+.daybar .nm{display:flex;font-weight:800;font-size:13px;margin-top:2px;color:var(--muted)}
+.daybar .nm span{text-align:center}
+.fb .sub{display:block;font-size:17px;font-weight:700;color:var(--muted);margin-top:6px}
 .bubble .txt{flex:1;min-width:0}
 .q{font-size:23px;font-weight:800;line-height:1.35}
 .big{font-size:46px;font-weight:900;color:var(--minute);line-height:1.15}
@@ -148,6 +175,30 @@ const hOf=T=>Math.floor(norm(T)/3600)%12||12;
 const mOf=T=>Math.floor(norm(T)/60)%60;
 const fmt=T=>hOf(T)+':'+String(mOf(T)).padStart(2,'0');
 
+/* ===================== Талисман: будильник Тикуша ===================== */
+function mascot(cls=''){return `<svg class="masc ${cls}" viewBox="0 0 100 112" aria-label="Тикуша">
+ <g class="bells"><path d="M30 13 Q50 1 70 13" stroke="#2b2d42" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <circle cx="50" cy="6" r="4" fill="#2b2d42"/>
+  <path d="M10 34 A16 16 0 0 1 36 14 Z" fill="#ffd166" stroke="#d99a00" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M90 34 A16 16 0 0 0 64 14 Z" fill="#ffd166" stroke="#d99a00" stroke-width="2.5" stroke-linejoin="round"/></g>
+ <path d="M38 90 L34 103" stroke="#2b2d42" stroke-width="4.5" stroke-linecap="round"/><path d="M62 90 L66 103" stroke="#2b2d42" stroke-width="4.5" stroke-linecap="round"/>
+ <ellipse cx="30" cy="104.5" rx="8" ry="4.5" fill="#2b2d42"/><ellipse cx="70" cy="104.5" rx="8" ry="4.5" fill="#2b2d42"/>
+ <g class="wave"><path d="M17 58 Q5 50 8 36" stroke="#e63958" stroke-width="5.5" fill="none" stroke-linecap="round"/><circle cx="8" cy="34" r="5" fill="#fffdf6" stroke="#2b2d42" stroke-width="2"/></g>
+ <path d="M83 62 Q95 68 89 78" stroke="#e63958" stroke-width="5.5" fill="none" stroke-linecap="round"/><circle cx="87" cy="80" r="5" fill="#fffdf6" stroke="#2b2d42" stroke-width="2"/>
+ <circle cx="50" cy="58" r="36" fill="#e63958" stroke="#b8263f" stroke-width="3"/>
+ <circle cx="50" cy="58" r="28" fill="#fffdf6"/>
+ <g fill="#2b2d42"><circle cx="50" cy="34" r="2.2"/><circle cx="74" cy="58" r="2.2"/><circle cx="50" cy="82" r="2.2"/><circle cx="26" cy="58" r="2.2"/></g>
+ <g class="eyes"><ellipse cx="41" cy="52" rx="4.2" ry="5.2" fill="#2b2d42"/><ellipse cx="59" cy="52" rx="4.2" ry="5.2" fill="#2b2d42"/>
+  <circle cx="42.6" cy="50.2" r="1.6" fill="#fff"/><circle cx="60.6" cy="50.2" r="1.6" fill="#fff"/></g>
+ <circle cx="34" cy="62" r="4" fill="#ffb3c1"/><circle cx="66" cy="62" r="4" fill="#ffb3c1"/>
+ <path class="m-smile" d="M42 63 Q50 71 58 63" stroke="#2b2d42" stroke-width="3" fill="none" stroke-linecap="round"/>
+ <path class="m-joy" d="M41 62 Q50 76 59 62 Z" fill="#2b2d42" stroke="#2b2d42" stroke-width="2" stroke-linejoin="round"/>
+ <path class="m-oops" d="M44 68 Q50 63 56 68" stroke="#2b2d42" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>`}
+let moodT=null;
+function mood(m){document.querySelectorAll('.bubble .masc,.result .masc').forEach(e=>{e.classList.remove('joy','oops');void e.getBoundingClientRect();if(m)e.classList.add(m)});
+  clearTimeout(moodT);if(m)moodT=setTimeout(()=>mood(null),1600)}
+
 /* ===================== Время по-русски ===================== */
 const CARD=['ноль','один','два','три','четыре','пять','шесть','семь','восемь','девять','десять','одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать'];
 const FEM=CARD.slice();FEM[1]='одна';FEM[2]='две';
@@ -156,7 +207,7 @@ const ORD_GEN=['','первого','второго','третьего','четв
 const HOUR_NOM=['','час','два','три','четыре','пять','шесть','семь','восемь','девять','десять','одиннадцать','двенадцать'];
 const GEN=['','одной','двух','трёх','четырёх','пяти','шести','семи','восьми','девяти','десяти','одиннадцати','двенадцати','тринадцати','четырнадцати','пятнадцати','шестнадцати','семнадцати','восемнадцати','девятнадцати','двадцати'];
 function plural(n,a,b,c){const t=n%100,u=n%10;if(t>10&&t<20)return c;if(u===1)return a;if(u>=2&&u<=4)return b;return c}
-function numF(n){if(n<20)return FEM[n];const t=Math.floor(n/10)*10,u=n%10;return TENS[t]+(u?' '+FEM[u]:'')}
+function numF(n){if(n<20)return FEM[n];if(n>=100)return 'сто'+(n>100?' '+numF(n-100):'');const t=Math.floor(n/10)*10,u=n%10;return TENS[t]+(u?' '+FEM[u]:'')}
 function minPhrase(m){return numF(m)+' '+plural(m,'минута','минуты','минут')}
 function hourPhrase(h){return h===1?'час':CARD[h]+' '+plural(h,'час','часа','часов')}
 function genN(n){return n<=20?GEN[n]:'двадцати '+GEN[n-20]}
@@ -176,7 +227,33 @@ function timeWords(T){
 }
 // «Электронная» форма: «три часа тридцать минут»
 function fullWords(T){const h=hOf(T),m=mOf(T);return hourPhrase(h)+(m?' '+minPhrase(m):' ровно')}
-function promptWords(T){const w=timeWords(T);return w==='час'?'ровно час':w}
+function promptWords(T){const w=timeWords(T);return mOf(T)===0?'ровно '+w:w}
+const ORD_NOM=['','первый','второй','третий','четвёртый','пятый','шестой','седьмой','восьмой','девятый','десятый','одиннадцатый','двенадцатый'];
+const INSTR=['','часом','двумя','тремя','четырьмя','пятью','шестью','семью','восемью','девятью','десятью','одиннадцатью','двенадцатью'];
+const GENH=['','часа','двух часов','трёх часов','четырёх часов','пяти часов','шести часов','семи часов','восьми часов','девяти часов','десяти часов','одиннадцати часов','двенадцати часов'];
+const between=h=>'между '+INSTR[h]+' и '+INSTR[h%12+1];
+function passed(h){return h===1?'один час уже прошёл':hourPhrase(h)+' уже прошло'}
+function passedVerb(n){return plural(n,'прошла','прошло','прошло')}
+// Подробное объяснение: что значит это время
+function explain(T){
+  const h=hOf(T),m=mOf(T),nx=h%12+1;
+  if(m===0)return 'Длинная стрелка наверху — значит, ровно. Короткая на цифре '+h+' — '+hourPhrase(h)+'.';
+  const head=cap(passed(h))+', идёт '+ORD_NOM[nx]+' час';
+  if(m===30)return head+', и от него прошла половина — тридцать минут.';
+  if(m===15)return head+', и от него прошла четверть — пятнадцать минут.';
+  if(m<35)return head+', и от него '+passedVerb(m)+' '+minPhrase(m)+'.';
+  const r=60-m;
+  if(r===15)return head+'. До '+GENH[nx]+' осталась четверть часа — пятнадцать минут.';
+  return head+'. До '+GENH[nx]+' '+plural(r,'осталась','осталось','осталось')+' '+minPhrase(r)+'.';
+}
+/* 24 часа */
+const numM=n=>n<20?CARD[n]:'двадцать'+(n>20?' '+CARD[n-20]:'');
+const fmt24=(h,m=0)=>h+':'+String(m).padStart(2,'0');
+function h24Words(h,m=0){if(m===0)return numM(h)+' '+plural(h,'час','часа','часов');return numM(h)+' '+(m<10?'ноль '+CARD[m]:numF(m))}
+const perGen=h=>h<5?'ночи':h<12?'утра':h<17?'дня':'вечера';
+const perName=h=>h<5?'🌌 Ночь':h<12?'☀️ Утро':h<17?'🌤️ День':'🌙 Вечер';
+function lab12(h24){const h=h24%12||12;return h+' '+plural(h,'час','часа','часов')+' '+perGen(h24)}
+function lab12w(h24){const h=h24%12||12;return hourPhrase(h)+' '+perGen(h24)}
 
 /* ===================== Звук и голос ===================== */
 let AC=null;
@@ -189,8 +266,8 @@ function tone(f,d=.12,type='sine',v=.15,delay=0){
 }
 let lastTick=0;
 const sfx={
-  good(){tone(660,.12,'triangle',.18);tone(880,.14,'triangle',.18,.1);tone(1175,.25,'triangle',.16,.2)},
-  bad(){tone(260,.18,'triangle',.14);tone(200,.25,'triangle',.12,.15)},
+  good(){mood('joy');tone(660,.12,'triangle',.18);tone(880,.14,'triangle',.18,.1);tone(1175,.25,'triangle',.16,.2)},
+  bad(){mood('oops');tone(260,.18,'triangle',.14);tone(200,.25,'triangle',.12,.15)},
   tick(alt){const n=performance.now();if(n-lastTick<45)return;lastTick=n;tone(alt?1500:1900,.03,'square',.025)},
   pop(i=0){tone(520+i*45,.09,'sine',.14)},
   win(){[523,659,784,1047].forEach((f,i)=>tone(f,.22,'triangle',.16,i*.13))}
@@ -198,7 +275,64 @@ const sfx={
 let ruVoice=null;
 function loadVoices(){if(!window.speechSynthesis)return;const v=speechSynthesis.getVoices();ruVoice=v.find(x=>/^ru/i.test(x.lang)&&/google|milena|irina|svetlana|dariya/i.test(x.name))||v.find(x=>/^ru/i.test(x.lang))||null}
 if(window.speechSynthesis){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
-function say(text){
+/* Записанный голос: voice/vox.json + спрайты voice/sprites/*.mp3.
+   Фраза ищется целиком, иначе складывается из кусочков (минимум кусочков). */
+const VX={sprites:null,items:[],lex:new Map(),maxLen:1,bytes:new Map(),bufs:new Map(),used:0,tok:0,srcs:[],done:null,miss:new Set()};
+const numMasc=n=>n<20?CARD[n]:n>=100?'сто'+(n>100?' '+numMasc(n-100):''):TENS[Math.floor(n/10)*10]+(n%10?' '+CARD[n%10]:'');
+TENS[60]='шестьдесят';TENS[70]='семьдесят';TENS[80]='восемьдесят';TENS[90]='девяносто';
+function vxWords(s){
+  s=String(s).replace(/\p{Extended_Pictographic}|️|‍/gu,' ').toLowerCase().replace(/ё/g,'е');
+  s=s.replace(/(\d{1,2}):(\d\d)/g,(_,h,m)=>{h=+h;m=+m;return ' '+(h===0?'ноль ноль':numMasc(h))+' '+(m===0?'ноль ноль':m<10?'ноль '+CARD[m]:numF(m))+' '});
+  s=s.replace(/(\d)\s*[−-]\s*(\d)/g,'$1 минус $2').replace(/\+/g,' плюс ').replace(/=/g,' ');
+  s=s.replace(/\d+(?=\s*(секунд|минут))/g,n=>' '+numF(+n)+' ').replace(/\d+/g,n=>' '+numMasc(+n)+' ');
+  return s.replace(/[^a-zа-я]+/g,' ').trim().split(' ').filter(Boolean);
+}
+fetch('voice/vox.json').then(r=>r.json()).then(j=>{
+  VX.sprites=j.sprites;
+  j.items.forEach(([id,sp,st,du,text])=>{const w=vxWords(text),k=w.join(' ');const it={id,sp,st,du,text};VX.items.push(it);
+    if(k&&!VX.lex.has(k))VX.lex.set(k,it);VX.maxLen=Math.max(VX.maxLen,w.length)});
+  // самые нужные спрайты (похвала, связки, игры, подсказки, числа) скачиваем заранее
+  const core=new Set();['praise.1','q.where','g.again','h.hour','n.1'].forEach(id=>{const it=VX.items.find(x=>x.id===id);if(it)core.add(it.sp)});
+  core.forEach(sp=>vxBytes(sp).catch(()=>{}));
+}).catch(()=>{});
+function vxPlan(text){
+  const w=vxWords(text),n=w.length;if(!n)return [];
+  const best=new Array(n+1).fill(null);best[n]={c:0};
+  for(let j=n-1;j>=0;j--){
+    for(let L=Math.min(VX.maxLen,n-j);L>=1;L--){const it=VX.lex.get(w.slice(j,j+L).join(' '));
+      if(it&&best[j+L]){const c=best[j+L].c+1;if(!best[j]||c<best[j].c)best[j]={c,it,L}}}
+  }
+  if(!best[0])return null;
+  const out=[];for(let j=0;j<n;j+=best[j].L)out.push(best[j].it);return out;
+}
+function vxBytes(sp){if(!VX.bytes.has(sp))VX.bytes.set(sp,fetch('voice/sprites/'+VX.sprites[sp]).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}));return VX.bytes.get(sp)}
+async function vxBuf(sp){
+  if(VX.bufs.has(sp)){const b=VX.bufs.get(sp);VX.bufs.delete(sp);VX.bufs.set(sp,b);return b}
+  const a=actx(),ab=await vxBytes(sp);
+  const buf=await new Promise((ok,no)=>a.decodeAudioData(ab.slice(0),ok,no));
+  VX.bufs.set(sp,buf);VX.used+=buf.length;
+  for(const [k,b] of VX.bufs){if(VX.used<=a.sampleRate*600||k===sp)break;VX.bufs.delete(k);VX.used-=b.length}  // держим ~10 минут звука
+  return buf;
+}
+function hush(){VX.tok++;VX.srcs.forEach(s=>{try{s.stop()}catch(e){}});VX.srcs=[];if(VX.done){VX.done();VX.done=null}if(window.speechSynthesis)speechSynthesis.cancel()}
+async function say(text){
+  if(!S.voice||!text){await new Promise(r=>setTimeout(r,300));return}
+  hush();const my=VX.tok;
+  const plan=VX.sprites?vxPlan(text):null,a=actx();
+  if(!plan||!a){if(VX.sprites&&!VX.miss.has(text)){VX.miss.add(text);console.warn('[голос] нет записи:',text,vxWords(text).join(' '))}return ttsSay(text)}
+  let bufs;try{bufs=await Promise.all(plan.map(it=>vxBuf(it.sp)))}catch(e){return my===VX.tok?ttsSay(text):undefined}
+  if(my!==VX.tok)return;
+  return new Promise(res=>{
+    VX.done=res;let t=a.currentTime+.05;
+    plan.forEach((it,i)=>{
+      const s=a.createBufferSource();s.buffer=bufs[i];s.connect(a.destination);s.start(t,it.st,it.du);VX.srcs.push(s);
+      t+=it.du;const nx=plan[i+1];
+      if(nx)t+=/[…,]$/.test(it.text)||/^…/.test(nx.text)?.04:/[:—]$/.test(it.text)?.15:.3;
+      if(!nx)s.onended=()=>{if(my===VX.tok){VX.srcs=[];if(VX.done===res)VX.done=null;res()}};
+    });
+  });
+}
+function ttsSay(text){
   return new Promise(res=>{
     if(!S.voice||!window.speechSynthesis||!text){setTimeout(res,300);return}
     speechSynthesis.cancel();
@@ -225,7 +359,7 @@ function later(ms){return new Promise(r=>{const id=setTimeout(()=>{TIMERS.delete
 function every(fn,ms){const id=setInterval(fn,ms);IVS.add(id);return id}
 function go(html,title){
   NAV++;
-  if(window.speechSynthesis)speechSynthesis.cancel();
+  hush();
   TIMERS.forEach(clearTimeout);TIMERS.clear();IVS.forEach(clearInterval);IVS.clear();
   CLOCKS.forEach(c=>c.destroy());CLOCKS=[];
   $('#view').innerHTML=html;$('#title').textContent=title||'Часики';scrollTo(0,0);
@@ -236,19 +370,22 @@ const alive=t=>t===NAV;
 /* ===================== Часы ===================== */
 const NS='http://www.w3.org/2000/svg';
 function sv(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
-const DEF={hour:false,minute:false,second:false,labels:false,sector:false,drag:null,numClick:false};
+const DEF={hour:false,minute:false,second:false,labels:false,sector:false,drag:null,numClick:false,hourArc:false,ring24:false};
 class Clock{
   constructor(host,opt={}){
     this.T=0;this.acc=0;this.cfg={...DEF};this.onChange=null;this.onRelease=null;this.onNumber=null;this.iv=null;this.raf=null;this.drag=null;
     const box=document.createElement('div');box.className=opt.mini?'minibox':'clockbox';host.appendChild(box);this.box=box;
     const s=this.svg=sv('svg',{viewBox:'-128 -128 256 256',class:'clock'},box);
     sv('circle',{r:125,class:'rim'},s);sv('circle',{r:104,class:'face'},s);
+    this.harc=sv('path',{class:'harc',d:''},s);
     this.sec=sv('path',{class:'sector',d:''},s);
     const tg=sv('g',{},s);
     for(let i=0;i<60;i++){const a=i*6*Math.PI/180,r1=i%5?95:88,r2=101;
       sv('line',{x1:r1*Math.sin(a),y1:-r1*Math.cos(a),x2:r2*Math.sin(a),y2:-r2*Math.cos(a),class:i%5?'tk':'tk5'},tg)}
     this.lbl=sv('g',{},s);
     for(let i=0;i<12;i++){const a=i*30*Math.PI/180;const t=sv('text',{x:114.5*Math.sin(a),y:-114.5*Math.cos(a),class:'rl'},this.lbl);t.textContent=String(i*5)}
+    this.r24=sv('g',{},s);
+    for(let n=1;n<=12;n++){const a=n*30*Math.PI/180;const t=sv('text',{x:53*Math.sin(a),y:-53*Math.cos(a),class:'r24'},this.r24);t.textContent=n+12}
     this.nums={};const ng=sv('g',{},s);
     for(let n=1;n<=12;n++){const a=n*30*Math.PI/180,x=75*Math.sin(a),y=-75*Math.cos(a);
       const g=sv('g',{class:'num'},ng);sv('circle',{cx:x,cy:y,r:16,class:'nb'},g);const t=sv('text',{x,y,class:'nt'},g);t.textContent=n;this.nums[n]=g}
@@ -262,7 +399,7 @@ class Clock{
   config(c){this.cfg={...DEF,...c};this.apply();this.render();return this}
   apply(){const c=this.cfg;
     this.hh.style.display=c.hour?'':'none';this.mh.style.display=c.minute?'':'none';this.sh.style.display=c.second?'':'none';
-    this.lbl.style.display=c.labels?'':'none';this.svg.classList.toggle('drag',!!c.drag);this.svg.classList.toggle('numclick',!!c.numClick);
+    this.lbl.style.display=c.labels?'':'none';this.r24.style.display=c.ring24?'':'none';this.svg.classList.toggle('drag',!!c.drag);this.svg.classList.toggle('numclick',!!c.numClick);
     this.sec.classList.toggle('s',c.sector==='sec')}
   set(T){cancelAnimationFrame(this.raf);this.T=norm(T);this.render();return this}
   render(){
@@ -270,6 +407,11 @@ class Clock{
     this.hh.setAttribute('transform',`rotate(${T/120})`);
     this.mh.setAttribute('transform',`rotate(${(T%3600)/10})`);
     this.sh.setAttribute('transform',`rotate(${(T%60)*6})`);
+    if(this.cfg.hourArc){const a1=Math.floor(T/3600)%12*30*Math.PI/180,a2=a1+Math.PI/6,R=104,r=38;
+      const P=(rr,aa)=>`${(rr*Math.sin(aa)).toFixed(2)} ${(-rr*Math.cos(aa)).toFixed(2)}`;
+      this.harc.setAttribute('d',`M${P(r,a1)} L${P(R,a1)} A${R} ${R} 0 0 1 ${P(R,a2)} L${P(r,a2)} A${r} ${r} 0 0 0 ${P(r,a1)} Z`)}
+    else this.harc.setAttribute('d','');
+    if(this.onRender)this.onRender(T);
     let a=null;
     if(this.cfg.sector==='min')a=(T%3600)/10;else if(this.cfg.sector==='sec')a=this.secFull?360:(T%60)*6;
     if(a===null||a<.5){this.sec.setAttribute('d','');return}
@@ -326,59 +468,94 @@ const B2={hour:true},B3={hour:true,minute:true};
 const glowList=(c,l)=>{c.clearMarks();l.forEach(n=>c.glow(n))};
 const LESSONS=[
  {id:'L1',em:'🔢',title:'Круг с цифрами',base:{},steps:[
-  {t:'Привет! Я Совёнок Тик 🦉. Я научу тебя понимать часы со стрелками.'},
+  {t:'Привет! Я будильник Тикуша. Я живу в часах и знаю про время всё-всё. Я научу тебя понимать часы со стрелками.'},
   {t:'Посмотри: часы — это круглая дорожка. На ней по порядку стоят цифры от одного до двенадцати.',
    anim:async(c,st)=>{for(let n=1;n<=12;n++){if(st())return;c.glow(n);sfx.pop(n);await say(CARD[n])}}},
   {t:'Наверху стоит цифра двенадцать. С неё всё начинается.',enter:c=>glowList(c,[12])},
-  {t:'По дорожке бегают стрелки. Они бегут всегда в одну сторону — вот так. Это называется «по часовой стрелке».',cfg:{minute:true},T:0,
-   enter:c=>{c.clearMarks();c.animTo(3599,4500,true)}},
+  {t:'Справа, на полпути вниз, стоит тройка. В самом низу — шестёрка. Слева — девятка. Эти четыре цифры как четыре стороны часов.',enter:c=>glowList(c,[12,3,6,9])},
+  {t:'Дорожка круглая, поэтому у неё нет конца. После двенадцати снова идёт один, потом два, три… И так по кругу весь день.',
+   anim:async(c,st)=>{c.clearMarks();for(const n of [11,12,1,2]){if(st())return;c.glow(n);sfx.pop(n);await later(500)}}},
+  {t:'По дорожке бегают стрелки. Они бегут всегда в одну сторону — вот так: от двенадцати к тройке, потом вниз к шестёрке. Это называется «по часовой стрелке».',cfg:{minute:true},T:0,
+   enter:c=>{c.clearMarks();c.animTo(3599,5000,true)}},
   {t:'Теперь поиграем! Нажимай на цифры по порядку.'}],
   games:[{type:'order',em:'🔢',title:'Цифры по порядку'},{type:'findNum',em:'🔎',title:'Найди цифру'}]},
 
- {id:'L2',em:'🐢',title:'Короткая стрелка',base:B2,steps:[
-  {t:'У часов есть стрелки. Вот короткая толстая красная стрелка. Она медленная, как черепаха 🐢. Её зовут часовая.',T:0},
+ {id:'L2',em:'🐢',title:'Короткая стрелка',base:{hour:true},steps:[
+  {t:'У часов есть стрелки. Вот короткая толстая красная стрелка. Она медленная, как черепаха. Её зовут часовая.',T:0},
   {t:'Часовая стрелка показывает, который час. Сейчас она смотрит на цифру три — значит, три часа.',T:0,enter:c=>{c.animTo(H(3),1500);c.glow(3)}},
-  {t:'Попробуй сам! Потяни короткую стрелку пальцем на другую цифру.',T:H(3),drag:{hour:3600},
+  {t:'Ещё примеры. Стрелка на семёрке — семь часов. На одиннадцати — одиннадцать часов. На единице — один час, или просто «час».',T:H(3),
+   anim:async(c,st)=>{for(const h of [7,11,1]){if(st())return;glowList(c,[h]);await c.animTo(H(h),1000);if(st())return;await say(cap(promptWords(H(h))))}}},
+  {t:'Попробуй сам! Потяни короткую стрелку пальцем на другую цифру. Я скажу, сколько получилось часов.',T:H(3),drag:{hour:3600},
    task:{check:(c,x)=>c.T!==x.T0},onRelease:c=>say(cap(promptWords(c.T)))},
-  {t:'Мы живём по часам. В восемь часов утра мы завтракаем 🥣.',T:H(8),enter:c=>glowList(c,[8])},
-  {t:'В девять часов идём в садик 🏫. А в девять вечера пора спать 😴.',T:H(9),enter:c=>glowList(c,[9])},
-  {t:'А если короткая стрелка стоит между тройкой и четвёркой — значит, три часа уже прошли, а четырёх ещё нет.',T:H(3,30),enter:c=>glowList(c,[3,4])},
+  {t:'Мы живём по часам. В восемь часов утра мы завтракаем.',T:H(8),enter:c=>glowList(c,[8])},
+  {t:'В девять часов идём в садик. А в девять вечера пора спать. Стрелка в обоих случаях на девятке — утро это или вечер, мы видим по окошку.',T:H(9),enter:c=>glowList(c,[9])},
+  {t:'Часовая стрелка такая медленная, что за целый час переходит всего на одну цифру. Поэтому почти всегда она стоит не на цифре, а между цифрами.',T:H(3),enter:c=>c.animTo(H(4),4000)},
+  {t:'Если короткая стрелка стоит между тройкой и четвёркой — значит, три часа уже прошли, а четырёх ещё нет. Сейчас чуть больше трёх.',T:H(3,30),enter:c=>glowList(c,[3,4])},
   {t:'Запомни: короткая стрелка — часовая. Она показывает, сколько часов. Поиграем!',T:H(5)}],
   games:[{type:'find',em:'🔎',title:'Где сколько часов?',p:{mins:MINS.whole,hourOnly:true}},
          {type:'show',em:'👆',title:'Поставь стрелку',p:{mins:MINS.whole,hourOnly:true}}]},
 
  {id:'L3',em:'🐰',title:'Длинная стрелка',base:B3,steps:[
-  {t:'Знакомься: длинная синяя стрелка. Она быстрая, как зайчик 🐰. Её зовут минутная.',T:H(3)},
+  {t:'Знакомься: длинная синяя стрелка. Она быстрая, как зайчик. Её зовут минутная, потому что она показывает минуты.',T:H(3)},
+  {t:'Посмотри на маленькие чёрточки по краю. Их шестьдесят. Каждая чёрточка — одна минута. А целый круг — шестьдесят минут, то есть один час.',T:H(3),cfg:{labels:false}},
   {t:'Когда длинная стрелка смотрит наверх, на двенадцать, время ровное. Короткая на тройке — значит, ровно три часа.',T:H(3),enter:c=>glowList(c,[12,3])},
   {t:'Смотри, что будет, если длинная стрелка пробежит целый круг.',T:H(3),cfg:{sector:'min'},
    anim:async c=>{await c.animTo(H(4),5000);c.glow(4)}},
-  {t:'Короткая стрелка переползла на одну цифру! Было три часа — стало четыре.',T:H(4),enter:c=>glowList(c,[3,4])},
+  {t:'Короткая стрелка переползла на одну цифру! Было три часа — стало четыре. Пока зайчик бежит круг, черепаха делает один шаг.',T:H(4),enter:c=>glowList(c,[3,4])},
+  {t:'Ещё примеры. Длинная наверху, короткая на семёрке — ровно семь часов. Короткая на десятке — ровно десять. Короткая на двенадцати — ровно двенадцать: обе стрелки смотрят вверх.',T:H(4),
+   anim:async(c,st)=>{for(const h of [7,10,12]){if(st())return;glowList(c,[h,12]);await c.animTo(H(h),1100);if(st())return;await say(cap(promptWords(H(h))))}}},
   {t:'Теперь ты! Прокрути длинную стрелку целый круг и следи за короткой.',T:H(4),cfg:{sector:'min'},drag:{minute:60},
    task:{check:(c,x)=>Math.abs(c.acc-x.A0)>=3540}},
   {t:'Запомни: длинная наверху — значит, ровно. А короткая показывает, сколько часов. Поиграем!',T:H(5)}],
   games:[{type:'find',em:'🔎',title:'Где ровно?',p:{mins:MINS.whole}},
          {type:'show',em:'👆',title:'Поставь ровно',p:{mins:MINS.whole}}]},
 
+ {id:'LH',em:'🔑',title:'Какой час идёт?',base:{...B3,hourArc:true},steps:[
+  {t:'Сейчас я открою тебе главный секрет часов. Он поможет понять, почему говорят «пятнадцать минут третьего» или «половина четвёртого».',T:0},
+  {t:'Короткая стрелка ушла от двенадцати и идёт к единице. Пока она идёт от двенадцати до одного, идёт первый час. Я подсветил этот кусочек.',T:0,enter:c=>{glowList(c,[12,1]);c.animTo(H(0,40),2500)}},
+  {t:'Стрелка дошла до единицы — первый час закончился. Теперь, от одного до двух, идёт второй час.',T:H(0,40),enter:c=>{glowList(c,[1,2]);c.animTo(H(1,40),2500)}},
+  {t:'А от двух до трёх идёт третий час.',T:H(1,40),enter:c=>{glowList(c,[2,3]);c.animTo(H(2,40),2500)}},
+  {t:'Запомни: если короткая стрелка между двумя и тремя, значит, два часа уже прошло, а идёт третий час.',T:H(2,40),enter:c=>glowList(c,[2,3])},
+  {t:'Поэтому и говорят: пятнадцать минут третьего. Это значит: два часа уже прошло, начался третий час, и от него прошло пятнадцать минут.',T:H(2,15),cfg:{sector:'min'},enter:c=>glowList(c,[2,3])},
+  {t:'Ещё пример: двадцать минут пятого. Четыре часа прошло, идёт пятый час, и от него прошло двадцать минут.',T:H(4,20),cfg:{sector:'min'},enter:c=>glowList(c,[4,5])},
+  {t:'И ещё: десять минут восьмого. Семь часов прошло, идёт восьмой час, и прошло десять минут.',T:H(7,10),cfg:{sector:'min'},enter:c=>glowList(c,[7,8])},
+  {t:'Правило простое: номер часа на один больше, чем цифра, которую стрелка уже прошла. Прошла тройку — идёт четвёртый час. Прошла девятку — идёт десятый.',T:H(3,25),
+   anim:async(c,st)=>{await later(300);if(st())return;glowList(c,[9,10]);await c.animTo(H(9,25),1500)}},
+  {t:'Самый хитрый случай — между двенадцатью и единицей. Двенадцать часов прошло, а идёт первый час, потому что начался новый круг.',T:H(0,20),enter:c=>glowList(c,[12,1])},
+  {t:'Покажи сам, где идёт шестой час. Потяни короткую стрелку, чтобы она стояла между пятью и шестью.',T:0,drag:{hour:300},
+   task:{check:c=>Math.floor(c.T/3600)%12===5&&c.T%3600!==0}},
+  {t:'Правильно! Пять часов прошло, идёт шестой час. Поиграем!'}],
+  games:[{type:'whichHour',em:'🔑',title:'Какой час идёт?'},{type:'hourShow',em:'👆',title:'Покажи нужный час'}]},
+
  {id:'L4',em:'🍕',title:'Половина',base:{...B3,sector:'min'},steps:[
-  {t:'Сейчас ровно три часа. Длинная стрелка наверху.',T:H(3)},
-  {t:'Пусть длинная стрелка побежит… Стоп! Она пробежала половину круга и смотрит вниз, на шесть.',T:H(3),enter:c=>c.animTo(H(3,30),3500)},
-  {t:'Закрашена ровно половина круга — как половинка пиццы 🍕. Прошло полчаса.',T:H(3,30)},
-  {t:'А короткая стрелка ушла от тройки и стоит посередине, между тремя и четырьмя.',T:H(3,30),enter:c=>glowList(c,[3,4])},
-  {t:'Три часа уже прошли, идёт четвёртый час. Поэтому так и говорят: половина четвёртого.',T:H(3,30)},
-  {t:'Поставь сам половину пятого. Длинная — вниз, на шесть. Короткая — между четырьмя и пятью.',T:0,drag:{hour:300,minute:300},
+  {t:'Сейчас ровно три часа. Длинная стрелка наверху, короткая на тройке.',T:H(3),enter:c=>glowList(c,[12,3])},
+  {t:'Пусть длинная стрелка побежит… Стоп! Она пробежала половину круга и смотрит вниз, на шесть.',T:H(3),enter:c=>{c.clearMarks();c.animTo(H(3,30),3500)}},
+  {t:'Закрашена ровно половина круга — как половинка пиццы. Значит, прошло полчаса, то есть тридцать минут.',T:H(3,30),enter:c=>glowList(c,[6])},
+  {t:'А короткая стрелка ушла от тройки и стоит посередине, между тремя и четырьмя.',T:H(3,30),cfg:{hourArc:true},enter:c=>glowList(c,[3,4])},
+  {t:'Вспомни секрет: три часа уже прошло, и идёт четвёртый час. А от четвёртого часа прошла ровно половина.',T:H(3,30),cfg:{hourArc:true}},
+  {t:'Поэтому так и говорят: половина четвёртого. Половина того часа, который идёт сейчас.',T:H(3,30),cfg:{hourArc:true}},
+  {t:'Будь внимателен: половина четвёртого — это не четыре часа! Это три часа и ещё полчаса. Цифрами пишут так: 3:30.',big:'3:30',T:H(3,30),cfg:{hourArc:true}},
+  {t:'Ещё пример: короткая между семью и восемью, длинная внизу. Семь часов прошло, идёт восьмой час, прошла его половина. Это половина восьмого.',T:H(7,30),cfg:{hourArc:true},enter:c=>glowList(c,[7,8])},
+  {t:'А это половина первого: двенадцать часов прошло, начался первый час, и прошла его половина.',T:H(0,30),cfg:{hourArc:true},enter:c=>glowList(c,[12,1])},
+  {t:'Поставь сам половину пятого. Подумай: какой час идёт? Пятый — значит, короткая стрелка между четырьмя и пятью. А длинная — вниз, на шесть.',T:0,drag:{hour:300,minute:300},cfg:{hourArc:true},
    task:{check:c=>c.T===H(4,30)}},
-  {t:'Ура! Это половина пятого. Поиграем!',T:H(4,30)}],
+  {t:'Ура! Четыре часа прошло, и прошла половина пятого часа. Поиграем!',T:H(4,30)}],
   games:[{type:'find',em:'🔎',title:'Найди половину',p:{mins:MINS.half}},
          {type:'show',em:'👆',title:'Поставь половину',p:{mins:MINS.half}}]},
 
  {id:'L5',em:'🍰',title:'Четверти',base:{...B3,sector:'min'},steps:[
-  {t:'Разрежем круг-пиццу на четыре одинаковых кусочка. Один кусочек называется четверть.',T:H(3),enter:c=>c.animTo(H(3,15),2500)},
-  {t:'Длинная стрелка смотрит на тройку — прошла одна четверть часа. Говорят: четверть четвёртого.',T:H(3,15),enter:c=>glowList(c,[3])},
-  {t:'Длинная на шестёрке — это уже знакомая половина четвёртого.',T:H(3,15),enter:c=>{glowList(c,[6]);c.animTo(H(3,30),1500)}},
-  {t:'А теперь длинная на девятке. До четырёх часов не хватает одного кусочка — четверти. Говорят: без четверти четыре.',T:H(3,30),enter:c=>{glowList(c,[9]);c.animTo(H(3,45),1500)}},
+  {t:'Разрежем круг-пиццу на четыре одинаковых кусочка. Один кусочек называется четверть. Это пятнадцать минут.',T:H(2),enter:c=>c.animTo(H(2,15),2500)},
+  {t:'Длинная стрелка смотрит на тройку — прошла одна четверть часа. А короткая чуть-чуть отошла от двойки.',T:H(2,15),enter:c=>glowList(c,[3,2])},
+  {t:'Два часа уже прошло, идёт третий час, и от него прошла четверть. Поэтому говорят: четверть третьего. Можно сказать и так: пятнадцать минут третьего.',T:H(2,15),cfg:{hourArc:true},enter:c=>glowList(c,[2,3])},
+  {t:'Длинная на шестёрке — прошло два кусочка. Это уже знакомая половина третьего.',T:H(2,15),enter:c=>{glowList(c,[6]);c.animTo(H(2,30),1500)}},
+  {t:'Длинная на девятке — прошло три кусочка. До трёх часов остался всего один кусочек, одна четверть.',T:H(2,30),enter:c=>{glowList(c,[9]);c.animTo(H(2,45),1500)}},
+  {t:'Поэтому говорят: без четверти три. «Без» значит «не хватает». До трёх часов не хватает четверти часа — пятнадцати минут.',T:H(2,45),cfg:{hourArc:true},enter:c=>glowList(c,[2,3])},
+  {t:'Посмотри: короткая стрелка почти дошла до тройки. Ещё немного — и будет ровно три.',T:H(2,45),anim:async c=>{await c.animTo(H(3),2500);glowList(c,[3,12])}},
+  {t:'Ещё пример: четверть восьмого. Семь часов прошло, идёт восьмой час, прошла его четверть. А без четверти восемь — до восьми осталась четверть часа.',T:H(7,15),
+   anim:async(c,st)=>{await later(1500);if(!st())c.animTo(H(7,45),1500)}},
   {t:'Запомни: на тройке — четверть, на шестёрке — половина, на девятке — без четверти.',T:H(4),
    anim:async(c,st)=>{for(const m of [15,30,45]){if(st())return;await c.animTo(H(4,m),1200);if(st())return;await say(timeWords(H(4,m)))}}},
-  {t:'Поставь без четверти шесть.',T:0,drag:{hour:300,minute:300},task:{check:c=>c.T===H(5,45)}},
+  {t:'Поставь без четверти шесть. Подсказка: до шести не хватает четверти, значит, короткая стрелка уже почти дошла до шестёрки.',T:0,drag:{hour:300,minute:300},task:{check:c=>c.T===H(5,45)}},
   {t:'Отлично! Поиграем!',T:H(5,45)}],
   games:[{type:'find',em:'🔎',title:'Найди четверть',p:{mins:MINS.quarter}},
          {type:'show',em:'👆',title:'Поставь четверть',p:{mins:MINS.quarter}}]},
@@ -386,27 +563,36 @@ const LESSONS=[
  {id:'L6',em:'🖐️',title:'Минуты по пять',base:{...B3,labels:true},steps:[
   {t:'Для длинной стрелки каждая цифра — это прыжок на пять минут. Давай посчитаем пятёрками!',T:H(3),
    anim:async(c,st)=>{for(let k=1;k<=12;k++){if(st())return;await c.animTo(H(3,5*k),350);if(st())return;await say(String(5*k))}}},
-  {t:'Подсказки на ободе показывают минуты. Длинная на двойке — это десять минут. Сейчас десять минут четвёртого.',T:H(3,10)},
-  {t:'Двадцать пять минут четвёртого. Короткая всё ещё между тройкой и четвёркой.',T:H(3,25),enter:c=>glowList(c,[3,4])},
-  {t:'Когда длинная стрелка прошла шестёрку, считают, сколько осталось до ровного. Длинная на десятке — до двенадцати осталось десять минут. Говорят: без десяти четыре.',T:H(3,50),enter:c=>glowList(c,[10])},
-  {t:'Поставь двадцать минут пятого.',T:0,drag:{hour:300,minute:300},task:{check:c=>c.T===H(4,20)}},
+  {t:'Подсказки на ободе показывают минуты. Длинная на двойке — это десять минут.',T:H(3,10),enter:c=>glowList(c,[2])},
+  {t:'Сейчас десять минут четвёртого. Почему четвёртого? Три часа уже прошло, идёт четвёртый час, и от него прошло десять минут.',T:H(3,10),cfg:{hourArc:true},enter:c=>glowList(c,[3,4])},
+  {t:'Ещё пример: пять минут девятого. Восемь часов прошло, идёт девятый час, и прошло пять минут.',T:H(8,5),cfg:{hourArc:true},enter:c=>glowList(c,[1])},
+  {t:'Двадцать пять минут четвёртого. Короткая всё ещё между тройкой и четвёркой: четвёртый час продолжается.',T:H(3,25),cfg:{hourArc:true},enter:c=>glowList(c,[3,4])},
+  {t:'Круг делится на две половинки. Справа, от двенадцати до шести, считаем, сколько минут прошло. Слева, от шести до двенадцати, — сколько осталось до следующего часа.',T:H(3,30),cfg:{sector:'min'}},
+  {t:'Длинная на десятке. До двенадцати ей осталось две цифры — это десять минут. До четырёх часов не хватает десяти минут. Говорят: без десяти четыре.',T:H(3,50),enter:c=>glowList(c,[10,11,12])},
+  {t:'Длинная на восьмёрке — до двенадцати четыре прыжка, двадцать минут. Это без двадцати четыре.',T:H(3,40),enter:c=>glowList(c,[8])},
+  {t:'Ещё пример: без пяти девять. До девяти часов осталось всего пять минут — длинная на одиннадцати, короткая почти на девятке.',T:H(8,55),enter:c=>glowList(c,[11,9])},
+  {t:'Можно сказать и по-другому: восемь пятьдесят пять, как на телефоне. Оба способа правильные.',big:'8:55',T:H(8,55)},
+  {t:'Поставь двадцать минут пятого. Подумай: длинная — на четвёртый прыжок, короткая — чуть дальше четвёрки.',T:0,drag:{hour:300,minute:300},task:{check:c=>c.T===H(4,20)}},
   {t:'Молодец! Поиграем!',T:H(4,20)}],
   games:[{type:'find',em:'🔎',title:'Найди время',p:{mins:MINS.five}},
          {type:'show',em:'👆',title:'Поставь время',p:{mins:MINS.five,labels:true}}]},
 
  {id:'L7',em:'🐭',title:'Секундная стрелка',base:{...B3,second:true},steps:[
-  {t:'Есть ещё одна стрелка — самая тонкая, зелёная. Это секундная. Она быстрая, как мышка 🐭.',T:H(3),enter:c=>c.run(true)},
-  {t:'Слышишь: тик-так? Каждый тик — это одна секунда.',enter:c=>c.run(true,true)},
-  {t:'Пока мышка пробегает целый круг, проходит одна минута. И длинная стрелка делает один маленький шажок — на одну чёрточку.',T:H(3),cfg:{sector:'sec'},
+  {t:'Есть ещё одна стрелка — самая тонкая, зелёная. Это секундная. Она быстрая, как мышка.',T:H(3),enter:c=>c.run(true)},
+  {t:'Слышишь: тик-так? Каждый тик — это одна секунда. Секунда — это очень мало: столько длится один хлопок в ладоши.',enter:c=>c.run(true,true)},
+  {t:'Пока мышка пробегает целый круг, проходит одна минута — шестьдесят секунд. И длинная стрелка делает один маленький шажок — на одну чёрточку.',T:H(3),cfg:{sector:'sec'},
    enter:c=>c.animTo(H(3,1),9000,true)},
+  {t:'Получается цепочка: мышка пробегает круг — зайчик делает шажок. Зайчик пробегает круг — черепаха переходит на следующую цифру.',T:H(3,1)},
   {t:'Попробуй сам: покрути зелёную стрелку целый круг и посмотри на длинную.',T:H(3),drag:{second:1},task:{check:(c,x)=>Math.abs(c.acc-x.A0)>=58}},
-  {t:'Секунды нужны, чтобы считать короткое время. А когда называют время, секунды не говорят — только часы и минуты. Поиграем!',T:H(3,1)}],
+  {t:'Секунды нужны, чтобы считать короткое время: сколько ты бежал или сколько варится яйцо. А когда называют время, секунды не говорят — только часы и минуты. Поиграем!',T:H(3,1)}],
   games:[{type:'jump',em:'🤸',title:'Прыгай минуту'},{type:'guess',em:'🙈',title:'Угадай минуту'}]},
 
  {id:'L8',em:'⌚',title:'Любые минуты',base:{...B3,labels:true},steps:[
   {t:'Между цифрами есть маленькие чёрточки. Каждая чёрточка — одна минута.',T:H(3),
    anim:async(c,st)=>{for(let k=1;k<=5;k++){if(st())return;await c.animTo(H(3,k),300);if(st())return;await say(String(k))}}},
-  {t:'Сейчас длинная стрелка на третьей чёрточке после двойки. Это десять и ещё три — тринадцать минут. Тринадцать минут четвёртого.',T:H(3,13)},
+  {t:'Сейчас длинная стрелка на третьей чёрточке после двойки. Двойка — это десять, и ещё три чёрточки — тринадцать минут. Тринадцать минут четвёртого.',T:H(3,13),enter:c=>glowList(c,[2])},
+  {t:'Ещё пример: длинная на одной чёрточке после пятёрки. Пятёрка — двадцать пять, и ещё одна — двадцать шесть минут.',T:H(3,26),enter:c=>glowList(c,[5])},
+  {t:'Когда минут больше половины, можно сказать двумя способами. Тридцать восемь минут пятого — или без двадцати двух пять. Оба правильные!',T:H(4,38)},
   {t:'На телефоне время пишут цифрами: сначала часы, потом две точки, потом минуты.',big:'3:13',T:H(3,13)},
   {t:'Половина четвёртого — это три тридцать. А без четверти четыре — три сорок пять.',big:'3:30 → 3:45',T:H(3,13),
    enter:async(c,st)=>{await c.animTo(H(3,30),1200);await later(2500);if(!st())c.animTo(H(3,45),1200)}},
@@ -414,7 +600,49 @@ const LESSONS=[
   {t:'Ты настоящий знаток часов! Поиграем!',T:H(4,18)}],
   games:[{type:'find',em:'🔎',title:'Найди время',p:{mins:MINS.any}},
          {type:'show',em:'👆',title:'Поставь время',p:{mins:MINS.any,step:60,digital:true}},
-         {type:'readText',em:'🔢',title:'Как записать?',p:{mins:MINS.any}}]}
+         {type:'readText',em:'🔢',title:'Как записать?',p:{mins:MINS.any}}]},
+
+ {id:'LD',em:'📱',title:'Цифры в стрелки',base:{...B3,labels:true},steps:[
+  {t:'Время часто пишут цифрами: на телефоне, на плите, в расписании автобусов. Давай научимся превращать цифры в стрелки.',big:'4:25',T:0},
+  {t:'Посмотри на запись 4:25. Число до двух точек — это часы. Число после двух точек — минуты.',big:'4 : 25',T:0},
+  {t:'Начинаем с минут, с длинной стрелки. Двадцать пять минут — считаем пятёрками: пять, десять, пятнадцать, двадцать, двадцать пять. Пятый прыжок — цифра пять.',big:'25',T:H(4),
+   anim:async(c,st)=>{for(let k=1;k<=5;k++){if(st())return;await c.animTo(H(4,5*k),400);if(st())return;await say(String(5*k))}}},
+  {t:'Хитрость: раздели минуты на пять — и узнаешь цифру для длинной стрелки. Двадцать пять разделить на пять — пять. Сорок пять — девять. Тридцать — шесть.',big:'25 : 5 = 5',T:H(4,25),enter:c=>glowList(c,[5])},
+  {t:'Теперь короткая стрелка. Часов четыре, но уже прошло двадцать пять минут. Поэтому короткая стоит не прямо на четвёрке, а немного дальше, по пути к пятёрке.',big:'4:25',T:H(4,25),cfg:{hourArc:true},enter:c=>glowList(c,[4,5])},
+  {t:'Короткая стоит точно на цифре, только когда минут ноль, например 4:00. Чем больше минут, тем ближе она к следующей цифре.',big:'4:00 → 4:55',T:H(4),
+   anim:async(c,st)=>{if(!st())await c.animTo(H(4,55),5000)}},
+  {t:'Пример: 7:30. Длинная — на шестёрку, потому что тридцать разделить на пять — шесть. Короткая — посередине между семью и восемью.',big:'7:30',T:H(7,30),enter:c=>glowList(c,[6,7,8])},
+  {t:'Пример: 9:15. Длинная — на тройку. Короткая — чуть-чуть после девятки.',big:'9:15',T:H(9,15),enter:c=>glowList(c,[3,9])},
+  {t:'Пример: 2:50. Длинная — на десятку. Короткая — почти у тройки, но ещё не дошла: три часа ещё не наступило!',big:'2:50',T:H(2,50),enter:c=>glowList(c,[10,2,3])},
+  {t:'Пример: 12:05. Длинная — на единицу. Короткая — чуть-чуть после двенадцати.',big:'12:05',T:H(0,5),enter:c=>glowList(c,[1,12])},
+  {t:'А если минуты не делятся на пять, например 6:08: длинная стоит на третьей чёрточке после единицы. Пять и ещё три — восемь.',big:'6:08',T:H(6,8),enter:c=>glowList(c,[1])},
+  {t:'Твоя очередь! Поставь стрелки: 3:40.',big:'3:40',T:0,drag:{hour:300,minute:300},task:{check:c=>c.T===H(3,40)}},
+  {t:'Ура! Теперь ты умеешь читать цифры и показывать их стрелками. Поиграем!',T:H(3,40)}],
+  games:[{type:'show',em:'📱',title:'Поставь по цифрам',p:{mins:MINS.five,digitalOnly:true,labels:true}},
+         {type:'find',em:'🔎',title:'Найди часы по цифрам',p:{mins:MINS.five,digitalOnly:true}},
+         {type:'show',em:'🎯',title:'Точно до минуты',p:{mins:MINS.any,step:60,digitalOnly:true}}]},
+
+ {id:'L24',em:'🌗',title:'13 часов и 22 часа',dayBar:true,base:{...B3},steps:[
+  {t:'В сутках двадцать четыре часа: ночь, утро, день и вечер. А на часах всего двенадцать цифр. Как же так?',T:0,bar:0},
+  {t:'Всё просто: за сутки короткая стрелка проходит круг два раза. Первый круг — ночью и утром, от полуночи до полудня.',T:0,pm:0,
+   anim:async(c,st,bar)=>{await c.animTo(43199,7000,true);if(!st()){c.onRender=null;bar.set(12)}}},
+  {t:'Второй круг — днём и вечером, от полудня до полуночи.',T:0,pm:12,
+   anim:async(c,st,bar)=>{await c.animTo(43199,7000,true);if(!st()){c.onRender=null;bar.set(24)}}},
+  {t:'Чтобы не перепутать утро и вечер, после полудня часы считают дальше: не один час, а тринадцать. Не два, а четырнадцать. Не три, а пятнадцать.',T:H(1),bar:13,cfg:{ring24:true},
+   anim:async(c,st,bar)=>{for(const h of [1,2,3]){if(st())return;glowList(c,[h]);bar.set(h+12);await c.animTo(H(h),900);if(st())return;await say(h24Words(h+12))}}},
+  {t:'Смотри: внутри круга маленькие фиолетовые цифры — это второй круг. Под единицей — тринадцать, под двойкой — четырнадцать, под десяткой — двадцать два.',T:H(10),bar:22,cfg:{ring24:true},enter:c=>glowList(c,[1,2,10])},
+  {t:'Секрет: к цифре на часах прибавь двенадцать. Час дня — один плюс двенадцать, это тринадцать часов. Десять вечера — десять плюс двенадцать, двадцать два часа.',big:'1 + 12 = 13',T:H(1),bar:13,cfg:{ring24:true},
+   anim:async(c,st,bar)=>{await later(600);if(st())return;$('#big').textContent='10 + 12 = 22';bar.set(22);glowList(c,[10]);await c.animTo(H(10),1200)}},
+  {t:'А чтобы узнать время на круге, наоборот, отними двенадцать. Пятнадцать часов: пятнадцать минус двенадцать — три. Это три часа дня. Восемнадцать часов — шесть вечера.',big:'15 − 12 = 3',T:H(3),bar:15,cfg:{ring24:true},
+   anim:async(c,st,bar)=>{await later(600);if(st())return;$('#big').textContent='18 − 12 = 6';bar.set(18);glowList(c,[6]);await c.animTo(H(6),1200)}},
+  {t:'Ещё примеры. Тринадцать ноль-ноль — час дня, обед. Шестнадцать тридцать — половина пятого, полдник. Двадцать один час — девять вечера, пора спать.',T:H(1),bar:13,cfg:{ring24:true},
+   anim:async(c,st,bar)=>{for(const [h,m] of [[13,0],[16,30],[21,0]]){if(st())return;$('#big').textContent=fmt24(h,m);bar.set(h+m/60);await c.animTo(H(h,m),1200);await later(1300)}}},
+  {t:'Утром ничего прибавлять не надо: девять утра — это просто девять часов, 9:00. А полночь называют ноль часов, 0:00: с неё начинаются новые сутки.',big:'9:00 · 0:00',T:H(9),bar:9},
+  {t:'Полдень — это двенадцать часов дня, 12:00. Короткая стрелка наверху, и начинается второй круг.',big:'12:00',T:0,bar:12},
+  {t:'Так время пишут на телефоне, в расписании поездов и по телевизору. А говорят коротко: «тринадцать часов», «двадцать два тридцать».',big:'13:00 · 22:30',T:H(10,30),bar:22.5},
+  {t:'Попробуй: сейчас вечер, на телефоне 20:00. Поставь это время на часах. Подсказка: двадцать минус двенадцать.',big:'20:00',T:0,bar:20,drag:{hour:300,minute:300},cfg:{ring24:true},task:{check:c=>c.T===H(8)}},
+  {t:'Ура! Двадцать часов — это восемь вечера. Поиграем!',T:H(8),bar:20}],
+  games:[{type:'conv',em:'🔄',title:'Скажи по-другому'},{type:'read24',em:'📱',title:'Что на телефоне?'},{type:'show24',em:'👆',title:'Поставь 13:00 и 22:00'}]}
 ];
 const EXTRAS=[
  {id:'day',em:'🌞',title:'Мой день',need:2,game:{type:'day',em:'🌞',title:'Мой день'}},
@@ -431,9 +659,21 @@ function lessonStars(li){const L=LESSONS[li];const done=L.games.filter((_,gi)=>g
   return Math.round(L.games.reduce((s,_,gi)=>s+gStars(li,gi),0)/L.games.length)}
 const starStr=n=>'★'.repeat(n)+'☆'.repeat(3-n);
 
+/* ===================== Полоска суток ===================== */
+function dayBar(host){
+  const el=document.createElement('div');el.className='daybar';
+  const seg=[[0,5,'#4b4a9a'],[5,12,'#ffe08a'],[12,17,'#9ad7ff'],[17,24,'#ffb37a']];
+  const names=[[0,5,'ночь'],[5,12,'утро'],[12,17,'день'],[17,24,'вечер']];
+  el.innerHTML=`<div class="wrap"><div class="track">${seg.map(([a,b,col])=>`<i style="width:${(b-a)/24*100}%;background:${col}"></i>`).join('')}</div><div class="mk"></div></div>
+   <div class="lb"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div>
+   <div class="nm">${names.map(([a,b,n])=>`<span style="width:${(b-a)/24*100}%">${n}</span>`).join('')}</div>`;
+  host.appendChild(el);const mk=el.querySelector('.mk');
+  return{el,set(h){h=Math.max(0,Math.min(24,h));mk.style.left=(h/24*100)+'%';mk.dataset.e=(h>=6&&h<19)?'☀️':'🌙'}};
+}
+
 /* ===================== Карта ===================== */
 function showMap(){
-  go(`<div class="hero"><div class="owl">🦉</div><div><h2>Совёнок Тик учит часы</h2><p>Проходи уроки по порядку: за каждую игру — звёздочки</p></div></div>
+  go(`<div class="hero">${mascot("xl")}<div><h2>Тикуша учит часы</h2><p>Проходи уроки по порядку: за каждую игру — звёздочки</p></div></div>
   <div class="grid" id="lessons"></div>
   <h3>Ещё игры</h3><div class="grid" id="extras"></div>
   <p class="small" style="margin-top:28px">Для взрослых: <button class="link" id="unl">${S.all?'закрыть уроки по порядку':'открыть все уроки сразу'}</button> · <button class="link" id="rst">сбросить прогресс</button></p>`,'Часики');
@@ -448,7 +688,7 @@ function showMap(){
     b.className='card'+(open?'':' locked');
     const st=X.game?`<div class="st">${open?starStr(S.g['X-'+X.id]||0):'после урока '+(X.need+1)}</div>`:'';
     b.innerHTML=`<div class="em">${open?X.em:'🔒'}</div><div class="tt">${X.title}</div>${st}`;
-    b.onclick=()=>{if(!open){sfx.bad();say('Эта игра откроется после урока '+(X.need+1)+'.');return}
+    b.onclick=()=>{if(!open){sfx.bad();say(X.need===2?'Эта игра откроется после третьего урока.':'Эта игра откроется после урока '+(X.need+1)+'.');return}
       if(X.id==='work')showWorkshop();else if(X.id==='live')showLive();else startGame(-1,X.game,'X-'+X.id)};eg.appendChild(b)});
   $('#unl').onclick=()=>{S.all=!S.all;save();showMap()};
   $('#rst').onclick=e=>{const b=e.target;if(b.dataset.sure){S.g={};S.seen={};save();showMap()}else{b.dataset.sure=1;b.textContent='точно сбросить? нажми ещё раз'}};
@@ -461,7 +701,7 @@ function showLesson(li){
   <div class="grid" id="lg"></div>`,`Урок ${li+1}`);
   const g=$('#lg');
   const ex=document.createElement('button');ex.className='card'+(S.seen[L.id]?'':' next');
-  ex.innerHTML=`<div class="em">🦉</div><div class="tt">Объяснение</div><div class="st">${S.seen[L.id]?'✓':'&nbsp;'}</div>`;
+  ex.innerHTML=`<div class="em">${mascot()}</div><div class="tt">Объяснение</div><div class="st">${S.seen[L.id]?'✓':'&nbsp;'}</div>`;
   ex.onclick=()=>runIntro(li);g.appendChild(ex);
   L.games.forEach((G,gi)=>{const b=document.createElement('button');b.className='card'+(S.seen[L.id]&&!gStars(li,gi)&&L.games.findIndex((_,k)=>!gStars(li,k))===gi?' next':'');
     b.innerHTML=`<div class="em">${G.em}</div><div class="tt">${G.title}</div><div class="st">${starStr(gStars(li,gi))}</div>`;
@@ -472,17 +712,18 @@ function showLesson(li){
 function runIntro(li){
   const L=LESSONS[li];
   const tok=go(`<div class="stage"><div class="clockcol" id="cc"></div>
-    <div><div class="bubble"><div class="owl">🦉</div><div class="txt"><div class="q" id="q"></div><div class="big" id="big"></div></div><button class="say" id="rep">🔊</button></div>
+    <div><div class="bubble">${mascot()}<div class="txt"><div class="q" id="q"></div><div class="big" id="big"></div></div><button class="say" id="rep">🔊</button></div>
     <div class="fb" id="fb"></div>
     <div class="row actions"><button class="btn sec" id="back">◀</button><button class="btn go" id="next">Дальше ▶</button></div>
     <div class="steps" id="steps"></div></div></div>`,`Урок ${li+1}. ${L.title}`);
-  const c=new Clock($('#cc'));let k=0,stepTok=0;
+  const c=new Clock($('#cc'));let k=0,stepTok=0;const bar=L.dayBar?dayBar($('#cc')):null;
   $('#steps').innerHTML=L.steps.map(()=>'<i></i>').join('');
   async function run(){
     const st=L.steps[k],my=++stepTok,stale=()=>!alive(tok)||my!==stepTok;
-    c.run(false);c.onChange=null;c.onRelease=null;c.secFull=false;c.clearMarks();
+    c.run(false);c.onChange=null;c.onRelease=null;c.onRender=null;c.secFull=false;c.clearMarks();
     c.config({...L.base,...(st.cfg||{}),drag:st.drag||null});
     if(st.T!=null)c.set(st.T);
+    if(bar){if(st.bar!=null)bar.set(st.bar);if(st.pm!=null){bar.set(st.pm);c.onRender=T=>bar.set(st.pm+T/3600)}}
     $('#q').textContent=st.t;$('#big').textContent=st.big||'';$('#fb').textContent='';$('#fb').className='fb';
     [...$('#steps').children].forEach((e,i)=>e.classList.toggle('on',i<=k));
     $('#back').disabled=k===0;
@@ -494,9 +735,9 @@ function runIntro(li){
       c.onChange=chk;
       c.onRelease=cc=>{chk();if(st.onRelease)st.onRelease(cc)};
     }else nx.disabled=false;
-    if(st.enter)st.enter(c,stale);
+    if(st.enter)st.enter(c,stale,bar);
     await say(st.t);if(stale())return;
-    if(st.anim)await st.anim(c,stale);
+    if(st.anim)await st.anim(c,stale,bar);
   }
   $('#next').onclick=()=>{actx();if(k<L.steps.length-1){k++;run()}else{S.seen[L.id]=1;save();startGame(li,0)}};
   $('#back').onclick=()=>{if(k>0){k--;run()}};
@@ -519,22 +760,24 @@ function distract(T,p){
 function minuteSpot(m){const ORD=['','первую','вторую','третью','четвёртую'];
   if(m===0)return 'наверх, на двенадцать';if(m%5===0)return 'на цифру '+m/5;
   return 'на '+ORD[m%5]+' чёрточку после цифры '+(Math.floor(m/5)||12)}
-function showHint(T,target,hourOnly){
+function showHint(T,target,hourOnly,digital){
   const th=hOf(target),tm=mOf(target),cm=mOf(T),nx=th%12+1;
   if(hourOnly)return 'Короткая стрелка должна смотреть на цифру '+th+'.';
-  if(cm!==tm)return 'Длинная стрелка должна смотреть '+minuteSpot(tm)+'.';
+  if(cm!==tm){
+    if(digital&&tm%5===0&&tm>0)return 'Минут '+tm+'. Раздели на пять: получится '+tm/5+'. Длинная стрелка должна смотреть на цифру '+tm/5+'.';
+    return 'Длинная стрелка должна смотреть '+minuteSpot(tm)+'.';}
   return tm===0?'Длинная — верно! Теперь короткая: она должна смотреть на цифру '+th+'.'
-               :'Длинная — верно! А короткая должна стоять между '+th+' и '+nx+'.';
+               :'Длинная — верно! А короткая должна стоять '+between(th)+': '+passed(th)+', идёт '+ORD_NOM[nx]+' час.';
 }
 
 function gameShell(title,opts={}){
   const tok=go(`<div class="dots" id="dots"></div><div class="stage"><div class="clockcol" id="cc"></div>
-   <div><div class="bubble"><div class="owl">🦉</div><div class="txt"><div class="q" id="q"></div><div class="big" id="big"></div></div><button class="say" id="rep">🔊</button></div>
+   <div><div class="bubble">${mascot()}<div class="txt"><div class="q" id="q"></div><div class="big" id="big"></div></div><button class="say" id="rep">🔊</button></div>
    <div id="area"></div><div class="fb" id="fb"></div><div class="row actions" id="act"></div></div></div>`,title);
   const ui={tok,q:$('#q'),big:$('#big'),area:$('#area'),fb:$('#fb'),act:$('#act'),cc:$('#cc'),
     dots(n,cur,res){$('#dots').innerHTML=Array.from({length:n},(_,i)=>`<i class="dot ${res[i]||(i===cur?'cur':'')}"></i>`).join('')},
-    ask(text,big=''){ui.q.textContent=text;ui.big.textContent=big;ui.fb.textContent='';ui.fb.className='fb';ui.lastSay=text;return say(text)},
-    fbk(text,ok){ui.fb.textContent=text;ui.fb.className='fb '+(ok?'ok':'no')},
+    ask(text,big='',spoken=text){ui.q.textContent=text;ui.big.textContent=big;ui.fb.textContent='';ui.fb.className='fb';ui.lastSay=spoken;return say(spoken)},
+    fbk(text,ok,sub){ui.fb.textContent=text;ui.fb.className='fb '+(ok?'ok':'no');if(sub){const e=document.createElement('span');e.className='sub';e.textContent=sub;ui.fb.appendChild(e)}},
     lastSay:''};
   $('#rep').onclick=()=>say(ui.lastSay);
   return ui;
@@ -545,7 +788,7 @@ function startGame(li,gi,xkey){
   const key=xkey||gkey(li,gi);
   const finish=stars=>{S.g[key]=Math.max(S.g[key]||0,stars);save();showResult(li,gi,stars,G)};
   const title=G.em+' '+G.title;
-  ({order:gOrder,findNum:gFindNum,find:gFind,show:gShow,readText:gReadText,day:gDay,jump:gJump,guess:gGuess})[G.type](G.p||{},title,finish);
+  ({order:gOrder,findNum:gFindNum,whichHour:gWhichHour,hourShow:gHourShow,conv:gConv,read24:gRead24,show24:gShow24,find:gFind,show:gShow,readText:gReadText,day:gDay,jump:gJump,guess:gGuess})[G.type](G.p||{},title,finish);
 }
 
 /* --- Цифры по порядку --- */
@@ -560,7 +803,7 @@ function gOrder(p,title,finish){
     else if(c.nums[n].classList.contains('done'))return;
     else{err++;miss++;sfx.bad();c.mark(n,'bad');later(500).then(()=>c.mark(n,'bad',false));
       const t='Это цифра '+n+'. А какая идёт после '+(next-1||'начала')+'?';
-      ui.fbk(next===1?'Начни с цифры один.':t,false);say(next===1?'Начни с цифры один.':t);if(miss>=2)c.glow(next)}};
+      ui.fbk(next===1?'Начни с цифры один.':t,false);say(next===1?'Начни с цифры один.':'Это цифра '+n+'. Ищи цифру '+next+'.');if(miss>=2)c.glow(next)}};
 }
 
 /* --- Найди цифру --- */
@@ -571,7 +814,7 @@ function gFindNum(p,title,finish){
     ui.ask('Найди цифру '+CARD[list[r]]+'.',String(list[r]))};
   c.onNumber=async n=>{if(lock)return;const t=list[r];
     if(n===t){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';c.mark(n,'done');sfx.good();burst();ui.fbk(pick(PRAISE),true);await say(pick(PRAISE));await later(500);if(alive(ui.tok))next()}
-    else{tries++;sfx.bad();c.mark(n,'bad');later(600).then(()=>c.mark(n,'bad',false));ui.fbk('Это '+n+'. Ищи '+t+'.',false);say('Это '+CARD[n]+'. Ищи '+CARD[t]+'.');if(tries>=2)c.glow(t)}};
+    else{tries++;sfx.bad();c.mark(n,'bad');later(600).then(()=>c.mark(n,'bad',false));ui.fbk('Это '+n+'. Ищи '+t+'.',false);say('Это цифра '+n+'. Ищи цифру '+t+'.');if(tries>=2)c.glow(t)}};
   next();
 }
 
@@ -587,13 +830,13 @@ function gFind(p,title,finish){
       new Clock(d,{mini:true}).config({hour:true,minute:!p.hourOnly}).set(T);
       d.onclick=async()=>{if(lock)return;actx();
         if(T===target){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';d.classList.add('ok');sfx.good();burst();
-          const ph=pick(PRAISE);ui.fbk(ph+' '+cap(words)+'.',true);await say(ph+' '+cap(words)+'.');await later(300);if(alive(ui.tok))next()}
+          const ph=pick(PRAISE),ex=p.hourOnly?'':explain(target);ui.fbk(ph+' '+cap(words)+'.',true,ex);await say(ph+' '+cap(words)+'. '+ex);await later(600);if(alive(ui.tok))next()}
         else{tries++;d.classList.add('no','shake');sfx.bad();
           if(tries>=2){lock=true;res[r]='meh';const good=[...box.children][opts.indexOf(target)];good.classList.add('ok','pulse');
-            ui.fbk('Вот где '+words+'.',false);await say('Смотри, вот где '+words+'.');await later(900);if(alive(ui.tok))next()}
+            const ex=p.hourOnly?'':explain(target);ui.fbk('Вот где '+words+'.',false,ex);await say('Смотри, вот где '+words+'. '+ex);await later(1200);if(alive(ui.tok))next()}
           else{ui.fbk('Посмотри ещё раз.',false);say('Посмотри ещё раз. Где '+words+'?')}}};
     });
-    ui.ask('Где '+words+'?',p.digital?fmt(target):'');
+    if(p.digitalOnly){ui.ask('Найди часы, на которых такое время:',fmt(target),'Найди часы, на которых такое время.')}else ui.ask('Где '+words+'?',p.digital?fmt(target):'');
   };
   next();
 }
@@ -607,15 +850,122 @@ function gShow(p,title,finish){
   let r=-1,ok=0,target=0,tries=0,lock=false,prev=[0];const res=[];
   const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));ui.dots(ROUNDS,r,res);
     target=gen(p,prev);prev.push(target);tries=0;lock=false;c.set(0);$('#chk').disabled=false;
-    ui.ask('Поставь '+promptWords(target)+'.',p.digital?fmt(target):'')};
+    if(p.digitalOnly){ui.ask('Поставь стрелки на это время:',fmt(target),'Поставь стрелки на время, которое написано цифрами.')}else ui.ask('Поставь '+promptWords(target)+'.',p.digital?fmt(target):'')};
   $('#chk').onclick=async()=>{if(lock)return;actx();
     if(c.T===target){lock=true;$('#chk').disabled=true;if(!tries)ok++;res[r]=tries?'meh':'ok';sfx.good();burst();
-      const ph=pick(PRAISE)+' '+cap(promptWords(target))+'.';ui.fbk(ph,true);await say(ph);await later(400);if(alive(ui.tok))next()}
+      const ph=pick(PRAISE)+' '+cap(promptWords(target))+'.',ex=p.hourOnly?'':explain(target);ui.fbk(ph,true,ex);await say(ph+' '+ex);await later(600);if(alive(ui.tok))next()}
     else{tries++;sfx.bad();c.box.classList.add('shake');later(500).then(()=>c.box.classList.remove('shake'));
       if(tries>=3){lock=true;$('#chk').disabled=true;res[r]='meh';ui.fbk('Смотри, вот так!',false);await c.animTo(target,1600);
-        await say('Смотри, вот так: '+promptWords(target)+'.');await later(1200);if(alive(ui.tok))next()}
-      else{const h=showHint(c.T,target,p.hourOnly);ui.fbk(h,false);say(h)}}};
-  const hb=$('#hint');if(hb)hb.onclick=()=>{c.cfg.labels=!c.cfg.labels;c.apply()};
+        const ex=p.hourOnly?'':explain(target);ui.fbk('Смотри, вот так!',false,ex);await say('Смотри, вот так: '+promptWords(target)+'. '+ex);await later(1200);if(alive(ui.tok))next()}
+      else{const h=showHint(c.T,target,p.hourOnly,p.digitalOnly);ui.fbk(h,false);say(h)}}};
+  const hb=$('#hint');if(hb)hb.onclick=()=>{const on=!c.cfg.hourArc;c.cfg.labels=on||!!p.labels;c.cfg.hourArc=on;c.apply();c.render()};
+  next();
+}
+
+/* --- Какой час идёт? --- */
+function gWhichHour(p,title,finish){
+  const ui=gameShell(title);const c=new Clock(ui.cc).config({hour:true,minute:true,hourArc:true});
+  let r=-1,ok=0,prev=[];const res=[];
+  const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));ui.dots(ROUNDS,r,res);
+    let T;do{T=H(rnd(12),5+rnd(11)*5)}while(prev.includes(T));prev.push(T);c.set(T);
+    const h=hOf(T),nx=h%12+1,wrong=[h,nx%12+1];const opts=shuffle([nx,...wrong]);let tries=0,lock=false;
+    ui.area.innerHTML='<div class="opts"></div>';const box=$('.opts',ui.area);
+    const why=cap(passed(h))+', короткая стрелка '+between(h)+'. Значит, идёт '+ORD_NOM[nx]+' час.';
+    opts.forEach(n=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`${n}-й<small>${ORD_NOM[n]} час</small>`;box.appendChild(b);
+      b.onclick=async()=>{if(lock)return;actx();
+        if(n===nx){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';b.classList.add('ok');sfx.good();burst();
+          ui.fbk(pick(PRAISE)+' Идёт '+ORD_NOM[nx]+' час.',true,why);await say(pick(PRAISE)+' '+why);await later(500);if(alive(ui.tok))next()}
+        else{tries++;b.classList.add('no','shake');sfx.bad();
+          const t=n===h?'Цифру '+h+' стрелка уже прошла — этот час закончился. Какой час идёт сейчас?':'До цифры '+(n-1||12)+' стрелка ещё не дошла. Посмотри внимательнее.';
+          if(tries>=2){lock=true;res[r]='meh';[...box.children][opts.indexOf(nx)].classList.add('ok','pulse');ui.fbk('Идёт '+ORD_NOM[nx]+' час.',false,why);await say(why);await later(1000);if(alive(ui.tok))next()}
+          else{ui.fbk(t,false);say(t)}}};
+    });
+    ui.ask('Какой час идёт? Посмотри, между какими цифрами стоит короткая стрелка.');
+  };
+  next();
+}
+
+/* --- Покажи нужный час --- */
+function gHourShow(p,title,finish){
+  const ui=gameShell(title);const c=new Clock(ui.cc).config({hour:true,minute:true,hourArc:true,drag:{hour:300}});
+  ui.act.innerHTML='<button class="btn go" id="chk">Проверить ✓</button>';
+  let r=-1,ok=0,n=1,tries=0,lock=false;const res=[],list=shuffle([2,3,4,5,6,7,8,9,10,11,12]).slice(0,ROUNDS);
+  const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));ui.dots(ROUNDS,r,res);
+    n=list[r];tries=0;lock=false;c.set(n===6||n===7?H(10):0);$('#chk').disabled=false;
+    ui.ask('Поставь короткую стрелку так, чтобы шёл '+ORD_NOM[n]+' час.',n+'-й час')};
+  $('#chk').onclick=async()=>{if(lock)return;actx();const prevH=n-1||12,inside=Math.floor(c.T/3600)%12===(n-1)%12&&c.T%3600!==0;
+    const why=cap(ORD_NOM[n])+' час идёт, когда '+passed(prevH)+': короткая стрелка '+between(prevH)+'.';
+    if(inside){lock=true;$('#chk').disabled=true;if(!tries)ok++;res[r]=tries?'meh':'ok';sfx.good();burst();ui.fbk(pick(PRAISE),true,why);await say(pick(PRAISE)+' '+why);await later(500);if(alive(ui.tok))next()}
+    else{tries++;sfx.bad();
+      if(tries>=3){lock=true;$('#chk').disabled=true;res[r]='meh';await c.animTo(H(prevH,30),1500);ui.fbk('Смотри, вот так!',false,why);await say('Смотри. '+why);await later(1000);if(alive(ui.tok))next()}
+      else{const t=c.T%3600===0&&hOf(c.T)===prevH?'Стрелка стоит прямо на цифре '+prevH+' — это ровно '+hourPhrase(prevH)+', новый час только начинается. Сдвинь её чуть дальше.':why;ui.fbk(t,false);say(t)}}};
+  next();
+}
+
+/* --- 24 часа: скажи по-другому --- */
+function gen24(prev=[]){let h,i=0;do{h=Math.random()<.75?12+rnd(12):rnd(12);i++}while(prev.includes(h)&&i<50);return h}
+function gConv(p,title,finish){
+  const ui=gameShell(title);ui.cc.innerHTML='';$('.stage').classList.add('wide');
+  let r=-1,ok=0,prev=[];const res=[];
+  const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));ui.dots(ROUNDS,r,res);
+    const h=gen24(prev);prev.push(h);const cand=[(h+12)%24,(h%10)+(h>=12?12:0),(h+1)%24,(h+23)%24];
+    const others=[];for(const x of cand)if(x!==h&&!others.includes(x)&&lab12(x)!==lab12(h))others.push(x);
+    const opts=shuffle([h,...others.slice(0,2)]);let tries=0,lock=false;
+    const why=h>=13?h+' − 12 = '+(h-12)+'. Значит, '+lab12(h)+'.':h===12?'12:00 — это полдень, двенадцать часов дня.':h===0?'0:00 — это полночь, двенадцать часов ночи.':'Утром и ночью ничего не отнимаем: '+lab12(h)+'.';
+    ui.area.innerHTML='<div class="opts"></div>';const box=$('.opts',ui.area);
+    opts.forEach(x=>{const b=document.createElement('button');b.className='opt';b.style.fontSize='22px';b.textContent=lab12(x);box.appendChild(b);
+      b.onclick=async()=>{if(lock)return;actx();
+        if(x===h){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';b.classList.add('ok');sfx.good();burst();ui.fbk(pick(PRAISE),true,why);
+          await say(pick(PRAISE)+' '+cap(h24Words(h))+' — это '+lab12w(h)+'.');await later(500);if(alive(ui.tok))next()}
+        else{tries++;b.classList.add('no','shake');sfx.bad();
+          if(tries>=2){lock=true;res[r]='meh';[...box.children][opts.indexOf(h)].classList.add('ok','pulse');ui.fbk('Правильно так:',false,why);await say(cap(h24Words(h))+' — это '+lab12w(h)+'.');await later(1000);if(alive(ui.tok))next()}
+          else{const t=h>=13?'Подсказка: отними двенадцать.':'Подсказка: до полудня ничего не отнимаем.';ui.fbk(t,false);say(t)}}};
+    });
+    ui.q.textContent='Как сказать по-другому?';ui.big.textContent=fmt24(h);ui.fb.textContent='';ui.fb.className='fb';
+    ui.lastSay=cap(h24Words(h))+'. Как сказать по-другому?';say(ui.lastSay);
+  };
+  next();
+}
+
+/* --- 24 часа: что на телефоне --- */
+function gRead24(p,title,finish){
+  const ui=gameShell(title);const c=new Clock(ui.cc).config({hour:true,minute:true});
+  const badge=document.createElement('div');badge.className='badge';c.box.appendChild(badge);const bar=dayBar(ui.cc);
+  let r=-1,ok=0,prev=[];const res=[];
+  const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));ui.dots(ROUNDS,r,res);
+    const h=gen24(prev),m=pick([0,0,30]);prev.push(h);c.set(H(h,m));badge.textContent=perName(h);bar.set(h+m/60);
+    const cand=[(h+12)%24,(h+2)%24,(h+22)%24];const others=[];for(const x of cand)if(x!==h&&!others.includes(x))others.push(x);
+    const opts=shuffle([h,...others.slice(0,2)]);let tries=0,lock=false;
+    const why=h===12?'Сейчас полдень — двенадцать часов дня, 12:00. С него начинается второй круг.':h>12?'Сейчас '+(h<17?'день':'вечер')+' — второй круг, прибавляем двенадцать: '+(h-12)+' + 12 = '+h+'.':'Сейчас '+(h<5?'ночь':'утро')+' — первый круг, ничего не прибавляем.';
+    ui.area.innerHTML='<div class="opts"></div>';const box=$('.opts',ui.area);
+    opts.forEach(x=>{const b=document.createElement('button');b.className='opt';b.textContent=fmt24(x,m);box.appendChild(b);
+      b.onclick=async()=>{if(lock)return;actx();
+        if(x===h){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';b.classList.add('ok');sfx.good();burst();ui.fbk(pick(PRAISE)+' '+fmt24(h,m),true,why);await say(pick(PRAISE)+' '+cap(h24Words(h,m))+'.');await later(500);if(alive(ui.tok))next()}
+        else{tries++;b.classList.add('no','shake');sfx.bad();
+          if(tries>=2){lock=true;res[r]='meh';[...box.children][opts.indexOf(h)].classList.add('ok','pulse');ui.fbk('Правильно: '+fmt24(h,m),false,why);await say(why);await later(1000);if(alive(ui.tok))next()}
+          else{const t='Посмотри, какое сейчас время суток: утро, день или вечер?';ui.fbk(t,false);say(t)}}};
+    });
+    ui.ask('Что сейчас показывает телефон?');
+  };
+  next();
+}
+
+/* --- 24 часа: поставь стрелки --- */
+function gShow24(p,title,finish){
+  const ui=gameShell(title);const c=new Clock(ui.cc).config({hour:true,minute:true,drag:{hour:300,minute:300}});
+  ui.act.innerHTML='<button class="btn go" id="chk">Проверить ✓</button><button class="btn sec sm" id="hint">💡 Подсказка</button>';
+  let r=-1,ok=0,h=13,m=0,tries=0,lock=false,prev=[];const res=[];
+  const next=()=>{r++;if(r>=ROUNDS)return finish(starsFor(ok,ROUNDS));ui.dots(ROUNDS,r,res);
+    do{h=13+rnd(11)}while(prev.includes(h));prev.push(h);m=pick([0,0,30]);tries=0;lock=false;c.set(0);c.cfg.ring24=false;c.apply();$('#chk').disabled=false;
+    ui.q.textContent='Поставь на часах время с телефона:';ui.big.textContent=fmt24(h,m);ui.fb.textContent='';ui.fb.className='fb';
+    ui.lastSay='Поставь '+h24Words(h,m)+'.';say(ui.lastSay)};
+  $('#chk').onclick=async()=>{if(lock)return;actx();const target=H(h,m);
+    const why=h+' − 12 = '+(h-12)+'. Значит, '+(m?timeWords(target):hourPhrase(h-12))+' '+perGen(h)+'.';
+    if(c.T===target){lock=true;$('#chk').disabled=true;if(!tries)ok++;res[r]=tries?'meh':'ok';sfx.good();burst();ui.fbk(pick(PRAISE),true,why);await say(pick(PRAISE)+' '+why);await later(500);if(alive(ui.tok))next()}
+    else{tries++;sfx.bad();
+      if(tries>=3){lock=true;$('#chk').disabled=true;res[r]='meh';await c.animTo(target,1500);ui.fbk('Смотри, вот так!',false,why);await say('Смотри. '+why);await later(1000);if(alive(ui.tok))next()}
+      else{const t=hOf(c.T)!==hOf(target)?'Отними двенадцать: '+why:showHint(c.T,target,false);ui.fbk(t,false);say(t)}}};
+  $('#hint').onclick=()=>{c.cfg.ring24=!c.cfg.ring24;c.apply()};
   next();
 }
 
@@ -630,10 +980,10 @@ function gReadText(p,title,finish){
     opts.forEach(T=>{const b=document.createElement('button');b.className='opt';b.textContent=fmt(T);box.appendChild(b);
       b.onclick=async()=>{if(lock)return;actx();
         if(T===target){lock=true;if(!tries)ok++;res[r]=tries?'meh':'ok';b.classList.add('ok');sfx.good();burst();
-          const t=pick(PRAISE)+' '+fmt(T)+' — '+timeWords(T)+'.';ui.fbk(t,true);await say(t);await later(300);if(alive(ui.tok))next()}
+          const ph=pick(PRAISE),t=ph+' '+fmt(T)+' — '+timeWords(T)+'.';ui.fbk(t,true);await say(ph+' '+cap(promptWords(T))+'.');await later(300);if(alive(ui.tok))next()}
         else{tries++;b.classList.add('no','shake');sfx.bad();
           if(tries>=2){lock=true;res[r]='meh';const g=[...box.children][opts.indexOf(target)];g.classList.add('ok','pulse');
-            const t='Правильно так: '+fmt(target)+' — '+timeWords(target)+'.';ui.fbk(t,false);await say(t);await later(900);if(alive(ui.tok))next()}
+            const t='Правильно так: '+fmt(target)+' — '+timeWords(target)+'.';ui.fbk(t,false,explain(target));await say('Правильно так: '+promptWords(target)+'. '+explain(target));await later(900);if(alive(ui.tok))next()}
           else{ui.fbk('Не совсем. Посмотри на стрелки ещё раз.',false);say('Не совсем. Посмотри ещё раз.')}}};
     });
     ui.ask('Который час? Как это записать цифрами?');
@@ -708,7 +1058,7 @@ function showResult(li,gi,stars,G){
   const lastGame=inLesson&&gi===L.games.length-1;
   const newLesson=inLesson&&li<LESSONS.length-1&&lessonDone(li);
   const msg=stars===3?'Великолепно!':stars===2?'Хорошо! Можно ещё лучше.':'Ты молодец, что старался! Давай ещё раз.';
-  go(`<div class="result"><div class="owl" style="font-size:80px">🦉</div>
+  go(`<div class="result">${mascot("xl")}
    <div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'':'e'}">⭐</span>`).join('')}</div>
    <h2>${msg}</h2>${lastGame&&newLesson?'<p class="q">Открыт новый урок! 🎉</p>':''}
    <div class="row"><button class="btn sec" id="again">↻ Ещё раз</button>
@@ -735,7 +1085,7 @@ function showWorkshop(){
   const cfg=()=>c.config({hour:true,minute:true,second:o.second,labels:o.labels,sector:o.sector?'min':false,drag:{hour:60,minute:60,second:1}});
   const upd=()=>{$('#w1').textContent=cap(timeWords(c.T));$('#w2').textContent='или: '+fullWords(c.T);$('#w3').textContent=o.digital?fmt(c.T):'';
     [...$('#tog').children].forEach(b=>b.classList.toggle('on',!!o[b.dataset.k]))};
-  const speak=()=>say(cap(timeWords(c.T)));
+  const speak=()=>say(cap(promptWords(c.T))+'.');
   cfg();c.set(H(3));upd();
   c.onChange=upd;c.onRelease=()=>{if(o.auto)speak()};
   document.querySelectorAll('[data-d]').forEach(b=>b.onclick=async()=>{await c.animTo(c.T+ +b.dataset.d,500);upd();if(o.auto)speak()});
@@ -747,10 +1097,8 @@ function showWorkshop(){
 /* ===================== Живые часы ===================== */
 function showLive(){
   go(`<div class="stage"><div class="clockcol" id="cc"></div><div>
-   <div class="bubble"><div class="owl">🦉</div><div class="txt"><div class="small" id="per" style="font-size:20px"></div><div class="q" id="w1" style="font-size:28px"></div><div class="big" id="w3"></div></div><button class="say" id="rep">🔊</button></div>
-   <div class="tog" id="tog"><button data-k="tick">Тик-так</button><button data-k="digital">Цифрами</button><button data-k="labels">Минуты на ободе</button></div>
-   <p class="small" style="margin-top:16px">Это настоящее время на твоём устройстве. Спроси у совёнка: «Который час?»</p>
-   </div></div>`,'⏱️ Живые часы');
+   <div class="bubble">${mascot()}<div class="txt"><div class="small" id="per" style="font-size:20px"></div><div class="q" id="w1" style="font-size:28px"></div><div class="big" id="w3"></div></div><button class="say" id="rep">🔊</button></div>
+   <div class="tog" id="tog"><button data-k="tick">Тик-так</button><button data-k="digital">Цифрами</button><button data-k="labels">Минуты на ободе</button></div>   </div></div>`,'⏱️ Живые часы');
   const o={tick:false,digital:true,labels:false};
   const c=new Clock($('#cc'));
   const now=()=>{const d=new Date();return{T:H(d.getHours(),d.getMinutes(),d.getSeconds()),h:d.getHours()}};
@@ -760,7 +1108,7 @@ function showLive(){
     [...$('#tog').children].forEach(b=>b.classList.toggle('on',!!o[b.dataset.k]))};
   const cfg=()=>c.config({hour:true,minute:true,second:true,labels:o.labels});
   cfg();upd();every(upd,1000);
-  $('#rep').onclick=()=>{const n=now();say('Сейчас '+timeWords(n.T)+' '+per(n.h)[1]+'.')};
+  $('#rep').onclick=()=>{const n=now();say('Сейчас '+promptWords(n.T)+', '+per(n.h)[0].split(' ')[1].toLowerCase()+'.')};
   $('#tog').onclick=e=>{const k=e.target.dataset&&e.target.dataset.k;if(!k)return;o[k]=!o[k];cfg();upd()};
 }
 
@@ -768,7 +1116,7 @@ function showLive(){
 function hdr(){$('#sndBtn').textContent=S.sound?'🔔':'🔕';$('#sndBtn').classList.toggle('off',!S.sound);$('#voiceBtn').classList.toggle('off',!S.voice)}
 $('#homeBtn').onclick=showMap;
 $('#sndBtn').onclick=()=>{S.sound=!S.sound;save();hdr();actx();sfx.pop()};
-$('#voiceBtn').onclick=()=>{S.voice=!S.voice;save();hdr();if(!S.voice&&window.speechSynthesis)speechSynthesis.cancel();else say('Голос включён')};
+$('#voiceBtn').onclick=()=>{S.voice=!S.voice;save();hdr();if(!S.voice)hush();else say('Голос включён')};
 hdr();showMap();
 </script>
 </body>

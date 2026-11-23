@@ -1,0 +1,5 @@
+# Исходная запись озвучки (77 МБ) — игре нужны только voice/sprites и voice/vox.json
+voice/ОЗВУЧКА.mp3
+voice/audio/
+.claude/
+__pycache__/
